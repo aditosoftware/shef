@@ -1,0 +1,43 @@
+
+#	Allgemeine Ignores
+
+*.ipr
+*.iml
+*.iws
+/.idea/*
+!/.idea/artifacts/
+!/.idea/codeStyleSettings.xml
+!/.idea/projectCodeStyle.xml
+!/.idea/vcs.xml
+
+
+#	Target Ignores
+
+/addendum/*/target/
+/addendum/annotationprocessors/*/target/
+/application/*/target/
+/library/*/target/
+/modules/*/target/
+/modules/nb-bpel/*/target/
+/modules/nb-ide/*/target/
+/modules/nb-jasper-designer/*/target/
+/modules/nb-soa/*/target/
+/modules/nb-xml/*/target/
+/neon/*/target/
+/packages/*/target/
+/packages/external/*/target/
+
+
+#	Benutzerdefinierte Ignores
+
+/temp/
+/.misc/
+/_misc/
+/misc/
+serverlicense.jar
+derby.log
+
+
+# shade-plugin dependency file
+
+dependency-reduced-pom.xml
