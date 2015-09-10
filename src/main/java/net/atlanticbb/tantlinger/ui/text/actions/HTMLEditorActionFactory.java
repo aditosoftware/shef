@@ -7,6 +7,8 @@ import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
 
 import org.bushe.swing.action.ActionList;
 
+import javax.swing.*;
+
 
 /**
  * @author Bob Tantlinger
@@ -14,7 +16,7 @@ import org.bushe.swing.action.ActionList;
  */
 public class HTMLEditorActionFactory
 {
-    public static ActionList createEditActionList()
+    public static ActionList createEditActionList(JEditorPane pWysEditor, JEditorPane pSrcEditor)
     {
         ActionList list = new ActionList("edit");
         list.add(CompoundUndoManager.UNDO);
@@ -22,7 +24,9 @@ public class HTMLEditorActionFactory
         list.add(null);
         list.add(new CutAction());
         list.add(new CopyAction());
-        list.add(new PasteAction());
+        PasteAction paste = new PasteAction();
+        paste.setEditors(pSrcEditor, pWysEditor);
+        list.add(paste);
         //list.add(new PasteFormattedAction());
         list.add(null);
         list.add(new SelectAllAction()); 

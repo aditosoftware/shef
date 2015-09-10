@@ -3,8 +3,7 @@
  */
 package net.atlanticbb.tantlinger.ui.text;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -14,6 +13,9 @@ import novaworx.syntax.Token;
 import novaworx.textpane.SyntaxDocument;
 import novaworx.textpane.SyntaxStyle;
 import novaworx.textpane.SyntaxTextPane;
+
+import javax.swing.*;
+import javax.swing.text.*;
 
 
 /**
@@ -247,6 +249,14 @@ public class SourceCodeEditor extends SyntaxTextPane
             }
         }
         return flags;
+    }
+
+    @Override
+    public void setText(String t) {
+        // Der Strint <!--br--> (escaped) wird durch ein richtiges <br> ersetzt, damit Zeilenumbrueche beim Einfuegen
+        // in der WYS ansicht erhalten bleiben
+        super.setText(t.replaceAll("&lt;!--br--&gt;", "<br>"));
+
     }
 
 }

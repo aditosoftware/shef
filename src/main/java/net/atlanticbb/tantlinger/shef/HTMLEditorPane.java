@@ -1,11 +1,6 @@
 package net.atlanticbb.tantlinger.shef;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -23,21 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JEditorPane;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.ChangeEvent;
@@ -87,7 +68,7 @@ import org.bushe.swing.action.ActionUIFactory;
  *
  * @author Bob Tantlinger
  */
-public class HTMLEditorPane extends JPanel 
+public class HTMLEditorPane extends JPanel
 {
 	 /**
      * 
@@ -179,10 +160,10 @@ public class HTMLEditorPane extends JPanel
     private void createEditorActions()
     {        
         actionList = new ActionList("editor-actions");
-        
+
         ActionList paraActions = new ActionList("paraActions");
         ActionList fontSizeActions = new ActionList("fontSizeActions");
-        ActionList editActions = HTMLEditorActionFactory.createEditActionList();
+        ActionList editActions = HTMLEditorActionFactory.createEditActionList(wysEditor, srcEditor);
         Action objectPropertiesAction = new HTMLElementPropertiesAction();
         
         //create editor popupmenus
@@ -194,11 +175,11 @@ public class HTMLEditorPane extends JPanel
         // create file menu
         JMenu fileMenu = new JMenu(i18n.str("file"));        
         
-        // create edit menu   
-        ActionList lst = new ActionList("edits");             
-        Action act = new ChangeTabAction(0);        
+        // create edit menu
+        ActionList lst = new ActionList("edits");
+        Action act = new ChangeTabAction(0);
         lst.add(act);
-        act = new ChangeTabAction(1);        
+        act = new ChangeTabAction(1);
         lst.add(act);
         lst.add(null);//separator        
         lst.addAll(editActions);
@@ -470,8 +451,8 @@ public class HTMLEditorPane extends JPanel
     private void createEditorTabs()
     {
         tabs = new JTabbedPane(SwingConstants.BOTTOM);
+        srcEditor = createSourceEditor();
         wysEditor = createWysiwygEditor();
-        srcEditor = createSourceEditor();        
         
         tabs.addTab("Edit", new JScrollPane(wysEditor));
         
@@ -485,10 +466,10 @@ public class HTMLEditorPane extends JPanel
         tabs.addChangeListener(new ChangeListener()
         {
             public void stateChanged(ChangeEvent e)
-            {                
-                updateEditView();                
+            {
+                updateEditView();
             }
-        });       
+        });
     }
     
     private SourceCodeEditor createSourceEditor()
@@ -512,7 +493,7 @@ public class HTMLEditorPane extends JPanel
     private JEditorPane createWysiwygEditor()
     {
         JEditorPane ed = new JEditorPane();
-        ed.setEditorKitForContentType("text/html", new WysiwygHTMLEditorKit());
+        ed.setEditorKitForContentType("text/html", new WysiwygHTMLEditorKit(wysEditor, srcEditor));
        
         ed.setContentType("text/html"); 
         
@@ -527,7 +508,7 @@ public class HTMLEditorPane extends JPanel
         CompoundUndoManager cuh = new CompoundUndoManager(document, new UndoManager());
         document.addUndoableEditListener(cuh);
         document.addDocumentListener(textChangedHandler);
-                
+
         return ed;        
     }
     
@@ -549,7 +530,7 @@ public class HTMLEditorPane extends JPanel
     
     // called when changing tabs
     private void updateEditView()
-    {       
+    {
         if(tabs.getSelectedIndex() == 0)
         {           
             String topText = removeInvalidTags(srcEditor.getText());            
@@ -857,5 +838,5 @@ public class HTMLEditorPane extends JPanel
             
             
         }
-    }	
+    }
 }

@@ -49,6 +49,7 @@ import net.atlanticbb.tantlinger.ui.text.actions.EnterKeyAction;
 import net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction;
 import net.atlanticbb.tantlinger.ui.text.actions.RemoveAction;
 import net.atlanticbb.tantlinger.ui.text.actions.TabAction;
+import org.bushe.swing.action.ActionList;
 
 /**
  * An HTML Wysiwyg editor kit which can properly draw borderless tables
@@ -69,10 +70,13 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
         
     private Map editorToActionsMap = new HashMap();
     private KeyStroke tabBackwardKS = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK);
-        
-    public WysiwygHTMLEditorKit()
+
+    JEditorPane wys, src;
+    public WysiwygHTMLEditorKit(JEditorPane pWys, JEditorPane pSrc)
     {
-        super();        
+        super();
+        wys = pWys;
+        src = pSrc;
     }
     
     public Document createDefaultDocument()
@@ -122,6 +126,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
         
         delegate = actionMap.get("paste-from-clipboard");
         HTMLTextEditAction hteAction = new net.atlanticbb.tantlinger.ui.text.actions.PasteAction();
+        ((net.atlanticbb.tantlinger.ui.text.actions.PasteAction)hteAction).setEditors(src, ed);
         hteAction.putContextValue(HTMLTextEditAction.EDITOR, ed);
         actions.put("paste-from-clipboard", delegate);
         actionMap.put("paste-from-clipboard", hteAction);
