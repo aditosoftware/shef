@@ -7,6 +7,7 @@ package net.atlanticbb.tantlinger.ui.text.dialogs;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.HashMap;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -16,6 +17,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+import net.atlanticbb.tantlinger.i18n.ComboItem;
 import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
 
 
@@ -26,10 +28,15 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
      */
     private static final long serialVersionUID = 1L;
 
-    private static final String ALIGNMENTS[] =
+    private static final ComboItem ALIGNMENTS[] =
     {
-        "top", "middle", "bottom", "left", "right" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        new ComboItem("top", i18n),
+        new ComboItem("middle", i18n),
+        new ComboItem("bottom", i18n),
+        new ComboItem("left", i18n),
+        new ComboItem("right", i18n) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     };
+    private HashMap<String, ComboItem> alignmentsmap;
     
     private JLabel imgUrlLabel = null;
     private JCheckBox altTextCB = null;
@@ -182,7 +189,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
         {
             alignCB.setSelected(true);
             alignCombo.setEnabled(true);
-            alignCombo.setSelectedItem(attribs.get("align")); //$NON-NLS-1$
+            alignCombo.setSelectedItem(alignmentsmap.get(attribs.get("align"))); //$NON-NLS-1$
         }
         else
         {
@@ -227,7 +234,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
             attribs.remove("border"); //$NON-NLS-1$
         
         if(alignCB.isSelected())
-            attribs.put("align", alignCombo.getSelectedItem().toString()); //$NON-NLS-1$
+            attribs.put("align", ((ComboItem)alignCombo.getSelectedItem()).getKey()); //$NON-NLS-1$
         else
             attribs.remove("align"); //$NON-NLS-1$
     }
@@ -239,6 +246,10 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
      */
     private void initialize()
     {
+        alignmentsmap = new HashMap<>();
+        for (ComboItem item : ALIGNMENTS)
+            alignmentsmap.put(item.getKey(), item);
+
         GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
         gridBagConstraints21.gridx = 0;
         gridBagConstraints21.gridwidth = 2;
@@ -280,7 +291,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
         imgUrlLabel = new JLabel();
         imgUrlLabel.setText(i18n.str("image_url")); //$NON-NLS-1$
         this.setLayout(new GridBagLayout());
-        this.setSize(365, 188);
+        this.setSize(465, 188);
         //this.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, "Image Properties", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), javax.swing.BorderFactory.createEmptyBorder(5,5,5,5)));
         this.add(imgUrlLabel, gridBagConstraints);
         this.add(getAltTextCB(), gridBagConstraints1);

@@ -4,8 +4,11 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
+import net.atlanticbb.tantlinger.i18n.ComboItem;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import javax.swing.JCheckBox;
@@ -21,9 +24,13 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel
      * 
      */
     private static final long serialVersionUID = 1L;
-    private static final String ALIGNMENTS[] = {"left", "center", "right"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    private static final String MEASUREMENTS[] = {"percent", "pixels"}; //$NON-NLS-1$ //$NON-NLS-2$
-    
+
+    private static final ComboItem ALIGNMENTS[] = {new ComboItem("left", i18n),
+             new ComboItem("center", i18n), new ComboItem("right", i18n)}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private HashMap<String, ComboItem> alignmentsmap;
+
+    private static final ComboItem MEASUREMENTS[] = {new ComboItem("percent", i18n), new ComboItem("pixels", i18n)}; //$NON-NLS-1$ //$NON-NLS-2$
+
     private JCheckBox widthCB = null;
     private JSpinner widthField = null;
     private JComboBox widthCombo = null;
@@ -92,7 +99,7 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel
         {
             alignCB.setSelected(true);
             alignCombo.setEnabled(true);
-            alignCombo.setSelectedItem(attribs.get("align")); //$NON-NLS-1$
+            alignCombo.setSelectedItem(alignmentsmap.get(attribs.get("align"))); //$NON-NLS-1$
         }
         else
         {
@@ -184,7 +191,7 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel
             attribs.remove("width"); //$NON-NLS-1$
         
         if(alignCB.isSelected())
-            attribs.put("align", alignCombo.getSelectedItem().toString()); //$NON-NLS-1$
+            attribs.put("align", ((ComboItem)alignCombo.getSelectedItem()).getKey()); //$NON-NLS-1$
         else
             attribs.remove("align"); //$NON-NLS-1$
         
@@ -242,7 +249,7 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel
         if(attribs.containsKey("align")) //$NON-NLS-1$
         {
             alignCB.setSelected(true);
-            alignCombo.setSelectedItem(attribs.get("align")); //$NON-NLS-1$
+            alignCombo.setSelectedItem(alignmentsmap.get(attribs.get("align"))); //$NON-NLS-1$
         }
         else
         {
@@ -327,6 +334,10 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel
      */
     private void initialize()
     {
+        alignmentsmap = new HashMap<>();
+        for (ComboItem item : ALIGNMENTS)
+            alignmentsmap.put(item.getKey(), item);
+
         GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
         gridBagConstraints12.gridx = 0;
         gridBagConstraints12.anchor = java.awt.GridBagConstraints.WEST;

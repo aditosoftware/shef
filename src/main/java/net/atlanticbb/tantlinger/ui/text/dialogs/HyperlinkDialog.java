@@ -59,7 +59,7 @@ public class HyperlinkDialog extends HTMLOptionDialog
         linkPanel = new LinkPanel(urlFieldEnabled);
         linkPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setContentPane(linkPanel);
-        setSize(315, 370);
+        setSize(415, 370);
         setResizable(false);
     }
     

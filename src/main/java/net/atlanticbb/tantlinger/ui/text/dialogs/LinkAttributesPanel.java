@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import net.atlanticbb.tantlinger.i18n.ComboItem;
 import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
 
 
@@ -22,11 +23,12 @@ public class LinkAttributesPanel extends HTMLAttributeEditorPanel
      * 
      */
     private static final long serialVersionUID = 1L;
-    private static final String NEW_WIN = "New Window"; //$NON-NLS-1$
-    private static final String SAME_WIN = "Same Window"; //$NON-NLS-1$
-    private static final String SAME_FRAME = "Same Frame"; //$NON-NLS-1$
-    private static final String TARGET_LABELS[] =
-    {NEW_WIN, SAME_WIN, SAME_FRAME};
+    private static final String NEW_WIN = "new_window"; //$NON-NLS-1$
+    private static final String SAME_WIN = "same_window"; //$NON-NLS-1$
+    private static final String SAME_FRAME = "same_frame"; //$NON-NLS-1$
+    private static final ComboItem TARGET_LABELS[] =
+    {new ComboItem(NEW_WIN, i18n), new ComboItem(SAME_WIN, i18n), new ComboItem(SAME_FRAME, i18n)};
+
     private static final String TARGETS[] = {"_blank", "_top", "_self"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     private JCheckBox nameCB = null;
     private JCheckBox titleCB = null;

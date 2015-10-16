@@ -69,7 +69,7 @@ public class NewTableDialog extends OptionDialog
         mainPanel.add(propsPanel, BorderLayout.CENTER);
         mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setContentPane(mainPanel);
-        setSize(new Dimension(330, 380));
+        setSize(new Dimension(430, 380));
         setResizable(false);        
     }
     
