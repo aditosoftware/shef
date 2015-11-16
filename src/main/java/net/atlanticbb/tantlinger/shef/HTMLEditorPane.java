@@ -194,7 +194,7 @@ public class HTMLEditorPane extends JPanel
         formatMenu = new JMenu(i18n.str("format"));        
         lst = HTMLEditorActionFactory.createFontSizeActionList();//HTMLEditorActionFactory.createInlineActionList();
         actionList.addAll(lst);        
-        formatMenu.add(createMenu(lst, i18n.str("size")));
+        formatMenu.add(createMenu(lst, i18n.str("size"), true));
         fontSizeActions.addAll(lst);
         
         lst = HTMLEditorActionFactory.createInlineActionList();
@@ -443,7 +443,13 @@ public class HTMLEditorPane extends JPanel
     
     private JMenu createMenu(ActionList lst, String menuName)
     {
+        return createMenu(lst, menuName, false);
+    }
+
+    private JMenu createMenu(ActionList lst, String menuName, boolean pSelected)
+    {
         JMenu m = ActionUIFactory.getInstance().createMenu(lst);
+        m.setSelected(pSelected);
         m.setText(menuName);
         return m;
     }
