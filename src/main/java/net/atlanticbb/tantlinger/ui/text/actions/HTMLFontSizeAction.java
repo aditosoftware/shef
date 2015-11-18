@@ -6,11 +6,11 @@ package net.atlanticbb.tantlinger.ui.text.actions;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.Action;
-import javax.swing.JEditorPane;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledEditorKit;
+import javax.swing.*;
+
+import javax.swing.text.*;
+import javax.swing.text.html.CSS;
+import javax.swing.text.html.HTMLDocument;
 
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 
@@ -80,8 +80,19 @@ public class HTMLFontSizeAction extends HTMLTextEditAction
         AttributeSet at = HTMLUtils.getCharacterAttributes(ed);
         if(at.isDefined(StyleConstants.FontSize))
         {
-            setSelected(at.containsAttribute(
-                StyleConstants.FontSize, new Integer(FONT_SIZES[size])));
+            int realFontSize = -1;
+            try
+            {
+                realFontSize = Integer.parseInt(((HTMLDocument.RunElement) at).getAttribute(CSS.Attribute.FONT_SIZE).toString());
+            }
+            catch (Exception e)
+            {
+                //nix
+            }
+            if (realFontSize != -1)
+                setSelected(realFontSize - 1 == size);
+                /*setSelected(at.containsAttribute(
+                    StyleConstants.FontSize, new Integer(FONT_SIZES[size])));*/
         }
         else
         {
