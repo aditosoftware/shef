@@ -4,21 +4,23 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import net.atlanticbb.tantlinger.i18n.ComboItem;
+import net.atlanticbb.tantlinger.ui.UIUtils;
 import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
+import org.apache.commons.io.FileUtils;
+import org.apache.tika.Tika;
 
 
 public class ImageAttributesPanel extends HTMLAttributeEditorPanel
@@ -55,8 +57,12 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
     private JTextField imgUrlField = null;
     private JTextField altTextField = null;
     private JPanel attribPanel = null;
+    private JButton imgChooseButton = null;
+    private JButton imgUrlChooseButton = null;
+    private File imgFile = null;
 
     private JPanel spacerPanel = null;
+    private JFileChooser fileChooser;
 
     /**
      * This is the default constructor
@@ -201,7 +207,20 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
     
     public void updateAttribsFromComponents()
     {
-        attribs.put("src", imgUrlField.getText()); //$NON-NLS-1$
+        if(imgFile == null)
+            attribs.put("src", imgUrlField.getText()); //$NON-NLS-1$
+        else{
+            try {
+                byte[] fileAsByte = FileUtils.readFileToByteArray(imgFile);
+                String base64output = Base64.encode(fileAsByte);
+                String mimetype = "data:"+new Tika().detect(fileAsByte)+";base64,";
+                attribs.put("src", mimetype+base64output);
+                attribs.put("src_path", imgFile);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         
         if(altTextCB.isSelected())
             attribs.put("alt", altTextField.getText()); //$NON-NLS-1$
@@ -256,15 +275,15 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
         gridBagConstraints21.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints21.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints21.weighty = 1.0;
-        gridBagConstraints21.gridy = 3;
+        gridBagConstraints21.gridy = 4;
         GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
         gridBagConstraints16.gridx = 0;
         gridBagConstraints16.gridwidth = 2;
         gridBagConstraints16.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints16.gridy = 2;
+        gridBagConstraints16.gridy = 3;
         GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
         gridBagConstraints15.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints15.gridy = 1;
+        gridBagConstraints15.gridy = 2;
         gridBagConstraints15.weightx = 1.0;
         gridBagConstraints15.insets = new java.awt.Insets(0,0,10,0);
         gridBagConstraints15.gridwidth = 1;
@@ -274,20 +293,40 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
         gridBagConstraints14.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints14.gridy = 0;
         gridBagConstraints14.weightx = 1.0;
-        gridBagConstraints14.insets = new java.awt.Insets(0,0,5,0);
+        gridBagConstraints14.insets = new java.awt.Insets(0,0,0,0);
         gridBagConstraints14.gridwidth = 1;
         gridBagConstraints14.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints14.gridx = 1;
+
+        GridBagConstraints gridBagConstraints14button = new GridBagConstraints();
+        gridBagConstraints14button.fill = GridBagConstraints.BOTH;
+        gridBagConstraints14button.gridy = 0;
+        gridBagConstraints14button.weightx = 1.0;
+        gridBagConstraints14button.insets = new java.awt.Insets(0,0,2,0);
+        gridBagConstraints14button.gridwidth = 1;
+        gridBagConstraints14button.anchor = GridBagConstraints.EAST;
+        gridBagConstraints14button.gridx = 2;
+
         GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
         gridBagConstraints1.gridx = 0;
         gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints1.insets = new java.awt.Insets(0,0,10,5);
-        gridBagConstraints1.gridy = 1;
+        gridBagConstraints1.gridy = 2;
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0,0,5,5);
         gridBagConstraints.gridy = 0;
+
+        GridBagConstraints gridBagConstraints14_1 = new GridBagConstraints();
+        gridBagConstraints14_1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints14_1.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints14_1.weightx = 1.0;
+        gridBagConstraints14_1.gridx = 1;
+        gridBagConstraints14_1.gridwidth = 1;
+        gridBagConstraints14_1.gridy = 1;
+        gridBagConstraints14_1.insets = new java.awt.Insets(0,0,5,0);
+
         imgUrlLabel = new JLabel();
         imgUrlLabel.setText(i18n.str("image_url")); //$NON-NLS-1$
         this.setLayout(new GridBagLayout());
@@ -296,6 +335,8 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
         this.add(imgUrlLabel, gridBagConstraints);
         this.add(getAltTextCB(), gridBagConstraints1);
         this.add(getImgUrlField(), gridBagConstraints14);
+        this.add(getImgURLChooser(), gridBagConstraints14button);
+        this.add(getImgFileChooser(), gridBagConstraints14_1);
         this.add(getAltTextField(), gridBagConstraints15);
         this.add(getAttribPanel(), gridBagConstraints16);
         this.add(getSpacerPanel(), gridBagConstraints21);
@@ -687,6 +728,106 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
             spacerPanel = new JPanel();
         }
         return spacerPanel;
+    }
+
+    private JButton getImgFileChooser()
+    {
+        if(imgChooseButton == null)
+        {
+            imgChooseButton = new JButton();
+            //configToolbarButton(imgChooseButton);
+            imgChooseButton.setText(i18n.str("image_embedd"));
+            imgChooseButton.setIcon(UIUtils.getIcon(UIUtils.X16, "import.png"));
+
+            imgChooseButton.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    _openFileDialog();
+                }
+            });
+        }
+        return imgChooseButton;
+    }
+
+    private JButton getImgURLChooser()
+    {
+        if(imgUrlChooseButton == null)
+        {
+            imgUrlChooseButton = new JButton();
+            //configToolbarButton(imgUrlChooseButton);
+            imgUrlChooseButton.setIcon(UIUtils.getIcon(UIUtils.X16, "import.png"));
+
+            imgUrlChooseButton.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    _openFileURLDialog();
+                }
+            });
+        }
+        return imgUrlChooseButton;
+    }
+
+    /**
+     * Öffnet einen FileDialog
+     */
+    private void _openFileDialog()
+    {
+        if(fileChooser == null)
+            _createFileChooser();
+        if(attribs.containsKey("src_path"))
+            fileChooser.setSelectedFile(FileUtils.getFile(attribs.get("src_path").toString()));
+        int returnVal = fileChooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            imgFile = fileChooser.getSelectedFile();
+            imgUrlField.setText(imgFile.getName());
+        }
+
+    }
+
+    /**
+     * Öffnet einen FileDialog
+     */
+    private void _openFileURLDialog()
+    {
+        if(fileChooser == null)
+            _createFileChooser();
+        if(attribs.containsKey("src_path"))
+            fileChooser.setSelectedFile(FileUtils.getFile(attribs.get("src_path").toString()));
+        int returnVal = fileChooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            try {
+                imgUrlField.setText(fileChooser.getSelectedFile().toURI().toURL().toString());
+            } catch (MalformedURLException e) {
+                // Nichts setzen
+            }
+        }
+
+    }
+
+    private void _createFileChooser()
+    {
+        fileChooser = new JFileChooser();
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(new FileNameExtensionFilter(i18n.str("image"), "png", "jpg", "jpeg", "bmp", "gif"));
+    }
+
+
+    private void configToolbarButton(JButton button)
+    {
+        button.setText(null);
+        button.setMnemonic(0);
+        button.setMargin(new Insets(1, 1, 1, 1));
+        button.setMaximumSize(new Dimension(22, 22));
+        button.setMinimumSize(new Dimension(22, 22));
+        button.setPreferredSize(new Dimension(22, 22));
+        button.setFocusable(false);
+        button.setFocusPainted(false);
+        Action a = button.getAction();
+        if(a != null)
+            button.setToolTipText(a.getValue(Action.NAME).toString());
     }
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"
