@@ -70,6 +70,7 @@ public class HTMLFontColorAction extends HTMLTextEditAction
 		if(color != null)
 		{
 		    Action a = new StyledEditorKit.ForegroundAction("Color", color);
+            e.setSource(editor); // Damit er die richtige TextPane findet
 		    a.actionPerformed(e);
 		}
     }
