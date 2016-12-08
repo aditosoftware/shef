@@ -5,19 +5,15 @@
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.util.Map;
-
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JTabbedPane;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-
 import net.atlanticbb.tantlinger.i18n.I18n;
 import net.atlanticbb.tantlinger.ui.OptionDialog;
 import net.atlanticbb.tantlinger.ui.UIUtils;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.util.Map;
 
 public class TablePropertiesDialog extends OptionDialog
 {
@@ -63,7 +59,7 @@ public class TablePropertiesDialog extends OptionDialog
         tabs.add(cellProps, i18n.str("cell")); //$NON-NLS-1$
         
         setContentPane(tabs);
-        setSize(440, 375);
+        setMinimumSize(new Dimension(440, 375));
         setResizable(false);
     }
     

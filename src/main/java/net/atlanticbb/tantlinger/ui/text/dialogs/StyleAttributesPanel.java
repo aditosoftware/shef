@@ -4,14 +4,11 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import javax.swing.JTextField;
-
 import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
 
-import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Hashtable;
 
 
 public class StyleAttributesPanel extends HTMLAttributeEditorPanel
@@ -75,7 +72,7 @@ public class StyleAttributesPanel extends HTMLAttributeEditorPanel
         classLabel = new JLabel();
         classLabel.setText(i18n.str("class")); //$NON-NLS-1$
         this.setLayout(new GridBagLayout());
-        this.setSize(new java.awt.Dimension(210,60));
+        this.setMinimumSize(new java.awt.Dimension(210,60));
         this.setPreferredSize(new java.awt.Dimension(210,60));
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(5,5,5,5));
         this.add(classLabel, gridBagConstraints);

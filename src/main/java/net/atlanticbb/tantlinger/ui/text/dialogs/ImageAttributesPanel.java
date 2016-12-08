@@ -4,6 +4,15 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import net.atlanticbb.tantlinger.i18n.ComboItem;
+import net.atlanticbb.tantlinger.ui.UIUtils;
+import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
+import org.apache.commons.io.FileUtils;
+import org.apache.tika.Tika;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -11,16 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
-
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-import net.atlanticbb.tantlinger.i18n.ComboItem;
-import net.atlanticbb.tantlinger.ui.UIUtils;
-import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
-import org.apache.commons.io.FileUtils;
-import org.apache.tika.Tika;
 
 
 public class ImageAttributesPanel extends HTMLAttributeEditorPanel
@@ -330,7 +329,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
         imgUrlLabel = new JLabel();
         imgUrlLabel.setText(i18n.str("image_url")); //$NON-NLS-1$
         this.setLayout(new GridBagLayout());
-        this.setSize(465, 188);
+        this.setMinimumSize(new Dimension(465, 188));
         //this.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, "Image Properties", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), javax.swing.BorderFactory.createEmptyBorder(5,5,5,5)));
         this.add(imgUrlLabel, gridBagConstraints);
         this.add(getAltTextCB(), gridBagConstraints1);
@@ -770,7 +769,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
     }
 
     /**
-     * Öffnet einen FileDialog
+     * ï¿½ffnet einen FileDialog
      */
     private void _openFileDialog()
     {
@@ -787,7 +786,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel
     }
 
     /**
-     * Öffnet einen FileDialog
+     * ï¿½ffnet einen FileDialog
      */
     private void _openFileURLDialog()
     {

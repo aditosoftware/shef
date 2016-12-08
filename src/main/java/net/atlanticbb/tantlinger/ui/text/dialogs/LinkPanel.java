@@ -4,17 +4,12 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.Hashtable;
 import java.util.Map;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
 
 
 
@@ -98,7 +93,7 @@ public class LinkPanel extends HTMLAttributeEditorPanel
     private void initialize()
     {
         this.setLayout(new BorderLayout(5, 5));
-        this.setSize(328, 218);
+        this.setMinimumSize(new Dimension(328, 218));
         this.add(getHlinkPanel(), java.awt.BorderLayout.NORTH);
         this.add(getLinkAttrPanel(), BorderLayout.CENTER);
         

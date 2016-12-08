@@ -4,15 +4,13 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.swing.Icon;
-
 import net.atlanticbb.tantlinger.i18n.I18n;
 import net.atlanticbb.tantlinger.ui.UIUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Iterator;
+import java.util.Map;
 
 
 public class ImageDialog extends HTMLOptionDialog
@@ -46,7 +44,7 @@ public class ImageDialog extends HTMLOptionDialog
     {
         imagePanel = new ImagePanel();
         setContentPane(imagePanel);
-        setSize(400, 345);
+        setMinimumSize(new Dimension(400, 345));
         setResizable(false);
     }
     

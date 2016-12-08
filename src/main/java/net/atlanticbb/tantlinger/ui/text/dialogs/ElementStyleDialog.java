@@ -4,15 +4,13 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.util.Map;
-
-import javax.swing.Icon;
-
 import net.atlanticbb.tantlinger.i18n.I18n;
 import net.atlanticbb.tantlinger.ui.OptionDialog;
 import net.atlanticbb.tantlinger.ui.UIUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Map;
 
 
 
@@ -48,7 +46,7 @@ public class ElementStyleDialog extends OptionDialog
         stylePanel = new StyleAttributesPanel();
         setContentPane(stylePanel);        
         pack();
-        setSize(300, getHeight());
+        setMinimumSize(new Dimension(300, getHeight()));
         setResizable(false);
     }
     

@@ -5,11 +5,9 @@
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 
-import java.awt.GridBagLayout;
-import javax.swing.JCheckBox;
-import java.awt.GridBagConstraints;
-import javax.swing.JComboBox;
-import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Hashtable;
 
 /**
  *  A panel for editing table alignment attributes
@@ -148,7 +146,7 @@ public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel
         gridBagConstraints.insets = new java.awt.Insets(0,0,5,5);
         gridBagConstraints.gridy = 0;
         this.setLayout(new GridBagLayout());
-        this.setSize(185, 95);
+        this.setMinimumSize(new Dimension(185, 95));
         this.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(i18n.str("content_alignment")), javax.swing.BorderFactory.createEmptyBorder(2,5,2,5))); //$NON-NLS-1$
         
         this.setPreferredSize(new java.awt.Dimension(185,95));

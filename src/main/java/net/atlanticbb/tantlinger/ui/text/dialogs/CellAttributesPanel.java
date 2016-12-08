@@ -4,14 +4,10 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import javax.swing.JCheckBox;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-
-import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Hashtable;
+import java.util.Map;
 
 public class CellAttributesPanel extends HTMLAttributeEditorPanel
 {
@@ -186,7 +182,7 @@ public class CellAttributesPanel extends HTMLAttributeEditorPanel
         gridBagConstraints.gridwidth = 1;
         gridBagConstraints.gridy = 0;
         this.setLayout(new GridBagLayout());
-        this.setSize(420, 200);
+        this.setMinimumSize(new Dimension(420, 200));
         this.setPreferredSize(new java.awt.Dimension(410,200));
         this.add(getAlignPanel(), gridBagConstraints);
         this.add(getSizePanel(), gridBagConstraints1);

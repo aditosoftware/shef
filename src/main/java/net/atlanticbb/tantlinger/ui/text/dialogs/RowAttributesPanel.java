@@ -4,10 +4,10 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Hashtable;
+import java.util.Map;
 
 public class RowAttributesPanel extends HTMLAttributeEditorPanel
 {
@@ -100,7 +100,7 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.gridy = 0;
         this.setLayout(new GridBagLayout());
-        this.setSize(279, 140);
+        this.setMinimumSize(new Dimension(279, 140));
         this.setPreferredSize(new java.awt.Dimension(215,140));
         this.add(getAlignPanel(), gridBagConstraints);
         this.add(getBgColorPanel(), gridBagConstraints1);

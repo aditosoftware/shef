@@ -4,16 +4,13 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import java.awt.Dialog;
-import java.awt.Frame;
-
-import javax.swing.Icon;
-
 import net.atlanticbb.tantlinger.i18n.I18n;
 import net.atlanticbb.tantlinger.ui.OptionDialog;
 import net.atlanticbb.tantlinger.ui.UIUtils;
 
-import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Map;
 
 public class ListDialog extends OptionDialog
 {
@@ -50,7 +47,7 @@ public class ListDialog extends OptionDialog
         listAttrPanel = new ListAttributesPanel();
         setContentPane(listAttrPanel);
         pack();
-        setSize(220, getHeight());
+        setMinimumSize(new Dimension(220, getHeight()));
         setResizable(false);
     }
     

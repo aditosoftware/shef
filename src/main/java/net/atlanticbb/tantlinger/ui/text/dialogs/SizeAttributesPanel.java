@@ -4,13 +4,9 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import java.awt.GridBagLayout;
-import javax.swing.JCheckBox;
-import java.awt.GridBagConstraints;
-import javax.swing.JSpinner;
-import javax.swing.JComboBox;
-import javax.swing.SpinnerNumberModel;
-import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Hashtable;
 
 
 /**
@@ -234,7 +230,7 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel
         gridBagConstraints.gridy = 0;
         
         this.setLayout(new GridBagLayout());
-        this.setSize(215, 95);
+        this.setMinimumSize(new Dimension(215, 95));
         this.setPreferredSize(new java.awt.Dimension(215,95));
         this.setMaximumSize(getPreferredSize());
         this.setMinimumSize(getPreferredSize());

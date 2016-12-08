@@ -4,21 +4,8 @@
  */
 package net.atlanticbb.tantlinger.ui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Paint;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
 
 public class HeaderPanel extends JPanel
 {
@@ -106,8 +93,7 @@ public class HeaderPanel extends JPanel
         titleLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         //titleLabel.setText("This is a title");
         this.setLayout(new GridBagLayout());
-        this.setSize(360, 56);
-        this.setPreferredSize(new java.awt.Dimension(360,56));
+        this.setMinimumSize(new Dimension(360, 56));
         this.add(titleLabel, gridBagConstraints);
         this.add(msgLabel, gridBagConstraints2);
         this.add(iconLabel, gridBagConstraints3);

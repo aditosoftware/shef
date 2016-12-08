@@ -4,15 +4,11 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import java.awt.GridBagLayout;
-import javax.swing.JCheckBox;
-import java.awt.GridBagConstraints;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-
 import net.atlanticbb.tantlinger.i18n.ComboItem;
 import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
+
+import javax.swing.*;
+import java.awt.*;
 
 
 
@@ -115,7 +111,7 @@ public class LinkAttributesPanel extends HTMLAttributeEditorPanel
         gridBagConstraints.insets = new java.awt.Insets(0,0,5,5);
         gridBagConstraints.gridy = 0;
         this.setLayout(new GridBagLayout());
-        this.setSize(new java.awt.Dimension(320,118));
+        this.setMinimumSize(new java.awt.Dimension(320,118));
         this.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, i18n.str("attributes"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), javax.swing.BorderFactory.createEmptyBorder(5,5,5,5))); //$NON-NLS-1$
         this.add(getNameCB(), gridBagConstraints);
         this.add(getTitleCB(), gridBagConstraints1);

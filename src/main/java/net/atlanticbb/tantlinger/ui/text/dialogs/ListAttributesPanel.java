@@ -4,13 +4,9 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import java.awt.GridBagLayout;
 import javax.swing.*;
-import java.awt.GridBagConstraints;
-import javax.swing.JComboBox;
-import javax.swing.JCheckBox;
-import javax.swing.SpinnerNumberModel;
-import java.util.*;
+import java.awt.*;
+import java.util.Hashtable;
 
 public class ListAttributesPanel extends HTMLAttributeEditorPanel
 {
@@ -155,7 +151,7 @@ public class ListAttributesPanel extends HTMLAttributeEditorPanel
         typeLabel = new JLabel();
         typeLabel.setText(i18n.str("list_type")); //$NON-NLS-1$
         this.setLayout(new GridBagLayout());
-        this.setSize(new java.awt.Dimension(234,159));
+        this.setMinimumSize(new java.awt.Dimension(234,159));
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(5,5,5,5));
         this.add(typeLabel, gridBagConstraints);
         this.add(getTypeCombo(), gridBagConstraints3);

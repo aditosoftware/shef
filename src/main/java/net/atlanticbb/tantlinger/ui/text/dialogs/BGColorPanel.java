@@ -4,17 +4,12 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import java.awt.Color;
-import javax.swing.JCheckBox;
-import java.awt.GridBagConstraints;
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
-
 import net.atlanticbb.tantlinger.i18n.I18n;
 import net.atlanticbb.tantlinger.ui.UIUtils;
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
+
+import javax.swing.*;
+import java.awt.*;
 
 
 public class BGColorPanel extends JPanel
@@ -85,7 +80,7 @@ public class BGColorPanel extends JPanel
         gridBagConstraints.insets = new java.awt.Insets(0,0,0,5);
         gridBagConstraints.gridy = 0;
         this.setLayout(new GridBagLayout());
-        this.setSize(175, 30);
+        this.setMinimumSize(new Dimension(175, 30));
         this.setPreferredSize(new java.awt.Dimension(175,30));
         this.setMinimumSize(getPreferredSize());
         this.setMaximumSize(getPreferredSize());

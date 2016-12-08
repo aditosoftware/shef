@@ -6,16 +6,10 @@ package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.i18n.ComboItem;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Hashtable;
-
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 
 public class TableAttributesPanel extends HTMLAttributeEditorPanel
 {
@@ -422,7 +416,7 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel
         gridBagConstraints.insets = new java.awt.Insets(0,0,10,3);
         gridBagConstraints.gridy = 0;
         this.setLayout(new GridBagLayout());
-        this.setSize(320, 140);
+        this.setMinimumSize(new Dimension(320, 140));
         this.setPreferredSize(new java.awt.Dimension(320,140));
         
         this.add(getWidthCB(), gridBagConstraints);

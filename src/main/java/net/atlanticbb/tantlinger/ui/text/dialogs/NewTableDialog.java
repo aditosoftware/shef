@@ -4,26 +4,15 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import java.awt.BorderLayout;
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-
 import net.atlanticbb.tantlinger.i18n.I18n;
 import net.atlanticbb.tantlinger.ui.OptionDialog;
 import net.atlanticbb.tantlinger.ui.UIUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 
 public class NewTableDialog extends OptionDialog
 {
@@ -69,7 +58,7 @@ public class NewTableDialog extends OptionDialog
         mainPanel.add(propsPanel, BorderLayout.CENTER);
         mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setContentPane(mainPanel);
-        setSize(new Dimension(430, 380));
+        setMinimumSize(new Dimension(430, 380));
         setResizable(false);        
     }
     
@@ -176,7 +165,7 @@ public class NewTableDialog extends OptionDialog
             rowsLabel = new JLabel();
             rowsLabel.setText(i18n.str("rows")); //$NON-NLS-1$
             this.setLayout(new GridBagLayout());
-            this.setSize(330, 60);
+            this.setMinimumSize(new Dimension(330, 60));
             this.setPreferredSize(new java.awt.Dimension(330,60));
             //this.setMaximumSize(this.getPreferredSize());
             this.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, i18n.str("layout"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), javax.swing.BorderFactory.createEmptyBorder(5,5,5,5))); //$NON-NLS-1$
