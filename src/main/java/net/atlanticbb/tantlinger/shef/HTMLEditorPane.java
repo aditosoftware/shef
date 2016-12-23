@@ -1,68 +1,33 @@
 package net.atlanticbb.tantlinger.shef;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-import javax.swing.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.Document;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.undo.UndoManager;
-
 import net.atlanticbb.tantlinger.i18n.I18n;
 import net.atlanticbb.tantlinger.ui.DefaultAction;
 import net.atlanticbb.tantlinger.ui.UIUtils;
-import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
-import net.atlanticbb.tantlinger.ui.text.Entities;
-import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
-import net.atlanticbb.tantlinger.ui.text.IndentationFilter;
-import net.atlanticbb.tantlinger.ui.text.SourceCodeEditor;
-import net.atlanticbb.tantlinger.ui.text.WysiwygHTMLEditorKit;
-import net.atlanticbb.tantlinger.ui.text.actions.ClearStylesAction;
-import net.atlanticbb.tantlinger.ui.text.actions.FindReplaceAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLEditorActionFactory;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLElementPropertiesAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLFontAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLFontColorAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLHorizontalRuleAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLImageAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLInlineAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLLineBreakAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLLinkAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLTableAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction;
-import net.atlanticbb.tantlinger.ui.text.actions.SpecialCharAction;
-
-
+import net.atlanticbb.tantlinger.ui.text.*;
+import net.atlanticbb.tantlinger.ui.text.actions.*;
 import novaworx.syntax.SyntaxFactory;
 import novaworx.textpane.SyntaxDocument;
 import novaworx.textpane.SyntaxGutter;
 import novaworx.textpane.SyntaxGutterBase;
-
 import org.bushe.swing.action.ActionList;
 import org.bushe.swing.action.ActionManager;
 import org.bushe.swing.action.ActionUIFactory;
+
+import javax.swing.*;
+import javax.swing.Timer;
+import javax.swing.event.*;
+import javax.swing.text.Document;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.undo.UndoManager;
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.List;
 
 /**
  *
@@ -274,6 +239,33 @@ public class HTMLEditorPane extends JPanel
         
        
         createFormatToolBar(paraActions, fontSizeActions);
+    }
+
+    /**
+     * Gibt alle Ressourcen der Komponente frei.
+     */
+    public void dispose() throws NoSuchFieldException, IllegalAccessException
+    {
+        //Da die laufenden Timer des EditorCarets verhindert, dass der GarbageCollector aufräumen kann,
+        //werden diese per Reflection ausfindig gemacht und gestoppt
+
+        Class<?>[] classes = srcEditor.getClass().getSuperclass().getDeclaredClasses();
+
+        for (Class<?> c : classes)
+        {
+            if (c.getSimpleName().equals("EditorCaret"))
+            {
+                Field moBlinkTimer = c.getDeclaredField("moBlinkTimer");
+                moBlinkTimer.setAccessible(true);
+                Timer blinkTimer = (Timer) moBlinkTimer.get(srcEditor.getCaret());
+                blinkTimer.stop();
+                Field moBlinkOffTimer = c.getDeclaredField("moBlinkOffTimer");
+                moBlinkOffTimer.setAccessible(true);
+                Timer blinkOffTimer = (Timer) moBlinkOffTimer.get(srcEditor.getCaret());
+                blinkOffTimer.stop();
+                break;
+            }
+        }
     }
     
     private void createFormatToolBar(ActionList blockActs, ActionList fontSizeActs)

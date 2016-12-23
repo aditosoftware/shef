@@ -12,7 +12,7 @@
 
   <groupId>net.atlanticbb.tantlinger</groupId>
   <artifactId>shef</artifactId>
-  <version>0.5j-adito</version>
+  <version>0.5l-adito</version>
 
   <dependencies>
     <dependency>

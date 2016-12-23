@@ -4,13 +4,11 @@
  */
 package net.atlanticbb.tantlinger.ui.text;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.util.Vector;
+import net.atlanticbb.tantlinger.i18n.I18n;
+import net.atlanticbb.tantlinger.ui.UIUtils;
+import org.bushe.swing.action.ActionManager;
 
-import javax.swing.Action;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.Document;
@@ -19,11 +17,12 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
-
-import org.bushe.swing.action.ActionManager;
-
-import net.atlanticbb.tantlinger.i18n.I18n;
-import net.atlanticbb.tantlinger.ui.UIUtils;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 
 
@@ -66,35 +65,17 @@ public class CompoundUndoManager implements UndoableEditListener
         
     private UndoManager undoer;
     private CompoundEdit compoundEdit = null;
-    private Document document = null;    
-    private static Vector docs = new Vector();
-    private static Vector lsts = new Vector();
-    private static Vector undoers = new Vector();
+    private WeakReference<Document> document = null;
+
+    public static Map<Document, CompoundUndoManager> lsts = new WeakHashMap<>();
+    public static Map<Document, UndoManager> undoers =  new WeakHashMap<>();
     
     protected static void registerDocument(Document doc, CompoundUndoManager lst, UndoManager um)
     {
-        docs.add(doc);
-        lsts.add(lst);
-        undoers.add(um);
+        lsts.put(doc, lst);
+        undoers.put(doc, um);
     }
-    
-    /**
-     * Gets the undo manager for a document that has a CompoundUndoManager
-     * as an UndoableEditListener
-     * @param doc
-     * @return The registed undomanger for the document
-     */
-    public static UndoManager getUndoManagerForDocument(Document doc)
-    {
-        for(int i = 0; i < docs.size(); i++)
-        {
-            if(docs.elementAt(i) == doc)
-                return (UndoManager)undoers.elementAt(i);
-        }
-        
-        return null;
-    }
-    
+
     /**
      * Notifies the CompoundUndoManager for the specified Document that 
      * a compound edit is about to begin.
@@ -103,15 +84,9 @@ public class CompoundUndoManager implements UndoableEditListener
      */
     public static void beginCompoundEdit(Document doc)
     {
-        for(int i = 0; i < docs.size(); i++)
-        {
-            if(docs.elementAt(i) == doc)
-            {
-                CompoundUndoManager l = (CompoundUndoManager)lsts.elementAt(i);
-                l.beginCompoundEdit();
-                return;
-            }
-        }
+        CompoundUndoManager c = lsts.get(doc);
+        if (c != null)
+            c.beginCompoundEdit();
     }
     
     /**
@@ -122,15 +97,9 @@ public class CompoundUndoManager implements UndoableEditListener
      */
     public static void endCompoundEdit(Document doc)
     {
-        for(int i = 0; i < docs.size(); i++)
-        {
-            if(docs.elementAt(i) == doc)
-            {
-                CompoundUndoManager l = (CompoundUndoManager)lsts.elementAt(i);
-                l.endCompoundEdit();
-                return;
-            }
-        }
+        CompoundUndoManager c = lsts.get(doc);
+        if (c != null)
+            c.endCompoundEdit();
     }
     
     /**
@@ -140,7 +109,7 @@ public class CompoundUndoManager implements UndoableEditListener
      */
     public static void updateUndo(Document doc)
     {
-        UndoManager um = getUndoManagerForDocument(doc);
+        UndoManager um = undoers.get(doc);
         if(um != null)
         {
             UNDO.setEnabled(um.canUndo());
@@ -155,7 +124,7 @@ public class CompoundUndoManager implements UndoableEditListener
      */
     public static void discardAllEdits(Document doc)
     {
-        UndoManager um = getUndoManagerForDocument(doc);        
+        UndoManager um = undoers.get(doc);
         if(um != null)
         {
             um.discardAllEdits();
@@ -173,8 +142,8 @@ public class CompoundUndoManager implements UndoableEditListener
     public CompoundUndoManager(Document doc, UndoManager um)
     {
        undoer = um;
-       document = doc;
-       registerDocument(document, this, undoer);
+       document = new WeakReference<>(doc);
+       registerDocument(doc, this, undoer);
     }
     
     /**
@@ -197,7 +166,7 @@ public class CompoundUndoManager implements UndoableEditListener
         else
         {            
             undoer.addEdit(edit);
-            updateUndo(document);
+            updateUndo(document.get());
         }        
     }
     
@@ -214,7 +183,7 @@ public class CompoundUndoManager implements UndoableEditListener
         {
             compoundEdit.end();
             undoer.addEdit(compoundEdit);
-            updateUndo(document);
+            updateUndo(document.get());
         }
         compoundEdit = null;
     }    
@@ -232,7 +201,7 @@ public class CompoundUndoManager implements UndoableEditListener
             putValue(Action.SMALL_ICON, UIUtils.getIcon(UIUtils.X16, "undo.png"));
             putValue(ActionManager.LARGE_ICON, UIUtils.getIcon(UIUtils.X24, "undo.png"));
             putValue(MNEMONIC_KEY, new Integer(i18n.mnem("undo")));
-                        
+
             setEnabled(false);
             putValue(
                 Action.ACCELERATOR_KEY,
@@ -243,7 +212,7 @@ public class CompoundUndoManager implements UndoableEditListener
         public void actionPerformed(ActionEvent e) 
         {
             Document doc = getTextComponent(e).getDocument();
-            UndoManager um = getUndoManagerForDocument(doc);
+            UndoManager um = undoers.get(doc);
             if(um != null)
             {
                 try 
@@ -284,7 +253,7 @@ public class CompoundUndoManager implements UndoableEditListener
         public void actionPerformed(ActionEvent e) 
         {
             Document doc = getTextComponent(e).getDocument();
-            UndoManager um = getUndoManagerForDocument(doc);
+            UndoManager um = undoers.get(doc);
             if(um != null)
             {
                 try 
