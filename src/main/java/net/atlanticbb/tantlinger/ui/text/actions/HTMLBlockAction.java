@@ -4,29 +4,24 @@
  */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
-import java.awt.Event;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import net.atlanticbb.tantlinger.ui.UIUtils;
+import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
+import net.atlanticbb.tantlinger.ui.text.ElementWriter;
+import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
+import org.bushe.swing.action.ActionManager;
 
-import javax.swing.Action;
-import javax.swing.JEditorPane;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
-
-import net.atlanticbb.tantlinger.ui.UIUtils;
-import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
-import net.atlanticbb.tantlinger.ui.text.ElementWriter;
-import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
-
-import org.bushe.swing.action.ActionManager;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Action which formats HTML block level elements
@@ -210,7 +205,7 @@ public class HTMLBlockAction extends HTMLTextEditAction
             awwCrap.printStackTrace();
         }        
 
-        CompoundUndoManager.endCompoundEdit(document);      
+        CompoundUndoManager.endCompoundEdit(document);
     }
     
     
@@ -299,58 +294,57 @@ public class HTMLBlockAction extends HTMLTextEditAction
     private void changeBlockType(JEditorPane editor, ActionEvent e) 
     throws BadLocationException
     {
-        HTMLDocument doc = (HTMLDocument)editor.getDocument();
+        HTMLDocument doc = (HTMLDocument) editor.getDocument();
+
         Element curE = doc.getParagraphElement(editor.getSelectionStart());
         Element endE = doc.getParagraphElement(editor.getSelectionEnd());
-        
+
         Element curTD = HTMLUtils.getParent(curE, HTML.Tag.TD);
         HTML.Tag tag = getTag();
         HTML.Tag rootTag = getRootTag(curE);
         String html = ""; //$NON-NLS-1$
-        
-        if(isListType())
+
+        if (isListType())
         {
             html = "<" + getTag() + ">"; //$NON-NLS-1$ //$NON-NLS-2$
             tag = HTML.Tag.LI;
-        }        
-                        
+        }
+
         //a list to hold the elements we want to change
-        List elToRemove = new ArrayList();
+        List<Element> elToRemove = new ArrayList<>();
+
         elToRemove.add(curE);
-        
-        while(true)
-        {            
-            html += HTMLUtils.createTag(tag, 
-                curE.getAttributes(), HTMLUtils.getElementHTML(curE, false));
-            if(curE.getEndOffset() >= endE.getEndOffset()
-                || curE.getEndOffset() >= doc.getLength())
+
+        while (true)
+        {
+            html += HTMLUtils.createTag(tag, curE.getAttributes(), HTMLUtils.getElementHTML(curE, false));
+
+            if (curE.getEndOffset() >= endE.getEndOffset() || curE.getEndOffset() >= doc.getLength())
                 break;
+
             curE = doc.getParagraphElement(curE.getEndOffset() + 1);
             elToRemove.add(curE);
-            
+
             //did we enter a (different) table cell?
             Element ckTD = HTMLUtils.getParent(curE, HTML.Tag.TD);
-            if(ckTD != null && !ckTD.equals(curTD))
+
+            if (ckTD != null && !ckTD.equals(curTD))
                 break;//stop here so we don't mess up the table
         }
-                
-        if(isListType())
+
+        if (isListType())
             html += "</" + getTag() + ">"; //$NON-NLS-1$ //$NON-NLS-2$
-        
+
         //set the caret to the start of the last selected block element
         editor.setCaretPosition(curE.getStartOffset());
-        
+
         //insert our changed block
-        //we insert first and then remove, because of a bug in jdk 6.0
         insertHTML(html, getTag(), rootTag, e);
-        
+
         //now, remove the elements that were changed.
-        for(Iterator it = elToRemove.iterator(); it.hasNext();)
-        {
-            Element c = (Element)it.next();
-            HTMLUtils.removeElement(c);
-        }
-    } 
+        for (Element element : elToRemove)
+            HTMLUtils.removeElement(element);
+    }
     
     private boolean isListType()
     {
