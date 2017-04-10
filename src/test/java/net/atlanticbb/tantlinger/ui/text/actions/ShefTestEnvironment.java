@@ -126,6 +126,9 @@ class ShefTestEnvironment
         return text;
     }
 
+    /**
+     * Speichert die aktuelle Caret Position und Selektion
+     */
     void saveCaretSelection()
     {
         selectionStart = pane.getSelectionStart();
@@ -133,6 +136,9 @@ class ShefTestEnvironment
         caretPosition = pane.getCaretPosition();
     }
 
+    /**
+     * Stellt die gespeicherte Caret Position und Selektion wieder her
+     */
     void restoreCaretSelection()
     {
         select(selectionStart, selectionEnd);
