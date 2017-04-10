@@ -338,12 +338,12 @@ public class HTMLBlockAction extends HTMLTextEditAction
         //set the caret to the start of the last selected block element
         editor.setCaretPosition(curE.getStartOffset());
 
-        //insert our changed block
-        insertHTML(html, getTag(), rootTag, e);
-
         //now, remove the elements that were changed.
         for (Element element : elToRemove)
             HTMLUtils.removeElement(element);
+
+        //insert our changed block
+        insertHTML(html, getTag(), rootTag, e);
     }
     
     private boolean isListType()
