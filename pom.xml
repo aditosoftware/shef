@@ -12,7 +12,7 @@
 
   <groupId>net.atlanticbb.tantlinger</groupId>
   <artifactId>shef</artifactId>
-  <version>0.5l-adito</version>
+  <version>0.5m-adito</version>
 
   <dependencies>
     <dependency>
@@ -43,6 +43,13 @@
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-core</artifactId>
       <version>1.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
