@@ -285,7 +285,7 @@ public class HTMLEditorPane extends JPanel
     private void createFormatToolBar(ActionList blockActs, ActionList fontSizeActs)
     {
         formatToolBar = new JToolBar();
-        formatToolBar.setFloatable(false);
+        formatToolBar.setFloatable(true);
         formatToolBar.setFocusable(false);
         
         Font comboFont = new Font("Dialog", Font.PLAIN, 12);
@@ -315,6 +315,7 @@ public class HTMLEditorPane extends JPanel
         paragraphCombo.setMinimumSize(new Dimension(120, 22));
         paragraphCombo.setMaximumSize(new Dimension(120, 22));
         paragraphCombo.setFont(comboFont);
+        paragraphCombo.setFocusable(false);
         paragraphCombo.addActionListener(paragraphComboHandler);
         paragraphCombo.setRenderer(new ParagraphComboRenderer());
         formatToolBar.add(paragraphCombo);
@@ -333,6 +334,7 @@ public class HTMLEditorPane extends JPanel
         fontFamilyCombo.setPreferredSize(new Dimension(150, 22));
         fontFamilyCombo.setMinimumSize(new Dimension(150, 22));
         fontFamilyCombo.setMaximumSize(new Dimension(150, 22));
+        fontFamilyCombo.setFocusable(false);
         fontFamilyCombo.setFont(comboFont);
         fontFamilyCombo.addActionListener(fontChangeHandler);
         formatToolBar.add(fontFamilyCombo);        
