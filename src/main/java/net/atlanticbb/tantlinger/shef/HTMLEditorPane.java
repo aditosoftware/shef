@@ -121,7 +121,21 @@ public class HTMLEditorPane extends JPanel
         return insertMenu;
     }
 
-    
+    protected JTabbedPane getTabs()
+    {
+        return tabs;
+    }
+
+    protected JEditorPane getWysEditor()
+    {
+        return wysEditor;
+    }
+
+    protected SourceCodeEditor getSrcEditor()
+    {
+        return srcEditor;
+    }
+
     private void createEditorActions()
     {        
         actionList = new ActionList("editor-actions");
