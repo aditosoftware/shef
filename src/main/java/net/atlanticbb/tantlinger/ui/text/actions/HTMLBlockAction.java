@@ -289,8 +289,6 @@ public class HTMLBlockAction extends HTMLTextEditAction
         
     }
     
-    
-    
     private void changeBlockType(JEditorPane editor, ActionEvent e) 
     throws BadLocationException
     {
@@ -322,7 +320,7 @@ public class HTMLBlockAction extends HTMLTextEditAction
             if (curE.getEndOffset() >= endE.getEndOffset() || curE.getEndOffset() >= doc.getLength())
                 break;
 
-            curE = doc.getParagraphElement(curE.getEndOffset() + 1);
+            curE = doc.getParagraphElement(curE.getEndOffset());
             elToRemove.add(curE);
 
             //did we enter a (different) table cell?
@@ -344,6 +342,12 @@ public class HTMLBlockAction extends HTMLTextEditAction
 
         //insert our changed block
         insertHTML(html, getTag(), rootTag, e);
+
+        //Wenn es noch nicht gelöscht wurde, wird es jetzt gelöscht
+        //Notwendig, da aufgrund eines Bugs im HTMLDocument die Elemente unter Umständen
+        //erst nach dem Hinzufügen der neuen Tags ordnungsgemäß gelöscht werden.
+        for (Element element : elToRemove)
+            HTMLUtils.removeElement(element);
     }
     
     private boolean isListType()

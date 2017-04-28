@@ -41,12 +41,12 @@ public class Test_HTMLBlockAction
         shef.setHTML("<p>Zeile 1</p><div>Zeile 2</div>");
         shef.selectAll();
 
-        _testAllBlockActions("\n" + shef.getText() + "\n");
+        _testAllBlockActions(shef.getText() + "\n");
 
         shef.setHTML("<p>Zeile 1</p><h1></h1><h2></h2><div>Zeile 2</div>");
         shef.selectAll();
 
-        _testAllBlockActions("\n\nZeile 1\n\nZeile 2\n");
+        _testAllBlockActions(shef.getText() + "\n");
 
         shef.setHTML("<p>Zeile 1</p>");
         shef.setCaretPosition(8);
@@ -64,7 +64,7 @@ public class Test_HTMLBlockAction
     }
 
     /**
-     * Testet alle Blocktypen
+     * Testet alle Blocktypen, indem geprüft wird, ob nach Änden des Blocktyps der Shef Text gleich dem Übergebenen ist
      *
      * @param pExpectedText Der erwartete Text
      */
@@ -87,7 +87,7 @@ public class Test_HTMLBlockAction
 
             shef.restoreCaretSelection();
 
-            _testBlocks(action);
+            _testBlocks(action.getTag());
 
             String newText = shef.getText();
             Assert.assertEquals(newText, pExpectedText);
@@ -97,14 +97,12 @@ public class Test_HTMLBlockAction
     /**
      * Überprüft, ob der Blocktyp in allen Selektierten Blöcken richtig umgesetzt wurde
      *
-     * @param action verwendete Action
+     * @param pTag gewünschtes Tag
      */
-    private void _testBlocks(HTMLBlockAction action)
+    private void _testBlocks(HTML.Tag pTag)
     {
-        HTML.Tag tag = action.getTag();
-
-        if(tag == HTML.Tag.UL || tag == HTML.Tag.OL) //Wenn es sich um eine Liste handelt
-            tag = HTML.Tag.LI;
+        if(pTag == HTML.Tag.UL || pTag == HTML.Tag.OL) //Wenn es sich um eine Liste handelt
+            pTag = HTML.Tag.LI;
 
         for (Element element : shef.getSelectedElements())
         {
@@ -114,7 +112,7 @@ public class Test_HTMLBlockAction
                 split = shef.getHTML(element.getParentElement()).split("<");
 
             for (int i = 1; i < split.length; i++)
-                if(!split[i].startsWith("/" + tag.toString()) && !split[i].startsWith(tag.toString()))
+                if(!split[i].startsWith("/" + pTag.toString()) && !split[i].startsWith(pTag.toString()))
                     Assert.fail();
         }
     }
