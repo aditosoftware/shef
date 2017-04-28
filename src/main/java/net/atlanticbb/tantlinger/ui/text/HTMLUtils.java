@@ -4,47 +4,26 @@
  */
 package net.atlanticbb.tantlinger.ui.text;
 
-import java.awt.Color;
-import java.io.ByteArrayInputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
-import javax.swing.JEditorPane;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-import javax.swing.text.StyledEditorKit;
-import javax.swing.text.html.CSS;
-import javax.swing.text.html.HTML;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
+
+import javax.swing.*;
+import javax.swing.text.*;
+import javax.swing.text.html.CSS;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
+import java.util.List;
 
 
 /**
@@ -680,7 +659,6 @@ public class HTMLUtils
             {                                        
                 SimpleAttributeSet sas = new SimpleAttributeSet();
                 sas.addAttributes(t.attrs);
-                sas.addAttribute(StyleConstants.NameAttribute, HTML.Tag.CONTENT);
                 sas.removeAttribute(atr);
                 doc.setCharacterAttributes(t.offs, t.len, sas, true);
             }
@@ -721,7 +699,6 @@ public class HTMLUtils
             {                                        
                 SimpleAttributeSet sas = new SimpleAttributeSet();
                 sas.addAttributes(t.attrs);
-                sas.addAttribute(StyleConstants.NameAttribute, HTML.Tag.CONTENT);
                 sas.removeAttribute(atr);
                 doc.setCharacterAttributes(t.offs, t.len, sas, true);
             }
@@ -766,7 +743,6 @@ public class HTMLUtils
      * Sets the character attributes for selection of the specified editor
      * 
      * @param editor
-     * @param attrs
      * @param replace if true, replaces the attrubutes
      */
     public static void setCharacterAttributes(JEditorPane editor, AttributeSet attr, boolean replace)
