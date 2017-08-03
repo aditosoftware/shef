@@ -4,7 +4,6 @@
  */
 package net.atlanticbb.tantlinger.ui.text;
 
-import com.sun.istack.internal.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
