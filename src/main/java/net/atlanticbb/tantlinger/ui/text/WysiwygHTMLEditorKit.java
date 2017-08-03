@@ -1,55 +1,23 @@
 package net.atlanticbb.tantlinger.ui.text;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import net.atlanticbb.tantlinger.ui.UIUtils;
+import net.atlanticbb.tantlinger.ui.text.actions.*;
 
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.BorderFactory;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.MouseInputAdapter;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.ComponentView;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.View;
-import javax.swing.text.ViewFactory;
+import javax.swing.text.*;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.ObjectView;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.util.*;
 
-import net.atlanticbb.tantlinger.ui.UIUtils;
-import net.atlanticbb.tantlinger.ui.text.actions.DecoratedTextAction;
 //import net.atlanticbb.tantlinger.ui.text.actions.EnterKeyAction;
-import net.atlanticbb.tantlinger.ui.text.actions.EnterKeyAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction;
-import net.atlanticbb.tantlinger.ui.text.actions.RemoveAction;
-import net.atlanticbb.tantlinger.ui.text.actions.TabAction;
-import org.bushe.swing.action.ActionList;
 
 /**
  * An HTML Wysiwyg editor kit which can properly draw borderless tables
@@ -126,7 +94,6 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
         
         delegate = actionMap.get("paste-from-clipboard");
         HTMLTextEditAction hteAction = new net.atlanticbb.tantlinger.ui.text.actions.PasteAction();
-        ((net.atlanticbb.tantlinger.ui.text.actions.PasteAction)hteAction).setEditors(src, ed);
         hteAction.putContextValue(HTMLTextEditAction.EDITOR, ed);
         actions.put("paste-from-clipboard", delegate);
         actionMap.put("paste-from-clipboard", hteAction);

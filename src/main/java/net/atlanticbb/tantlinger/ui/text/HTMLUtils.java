@@ -4,6 +4,7 @@
  */
 package net.atlanticbb.tantlinger.ui.text;
 
+import com.sun.istack.internal.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -72,41 +73,149 @@ public class HTMLUtils
      */
     public static String createTag(HTML.Tag enclTag, String innerHTML)
     {
-        return createTag(enclTag, new SimpleAttributeSet(), innerHTML);
+        return createTag(enclTag, null, innerHTML);
+    }
+
+    /**
+     * Kopiert die Verschachtelung von Tags, welche im Element und allen Unterelementen zum Einsatz kommt.
+     * Außerdem fügt er in der untersten Tag Ebene den HTML Code innerHTML ein
+     *
+     * @param pElem Das Element, dessen Struktur kopiert werden soll
+     * @param innerHTML einzufügender HTML
+     * @return kopierte Elementstrucktur
+     */
+    public static String copyElementStructure(Element pElem, String innerHTML)
+    {
+        String html = "";
+
+        for (int i = 0; i < pElem.getElementCount(); i++)
+        {
+            Element ele = pElem.getElement(i);
+            html += createTag(getTag(ele), ele.getAttributes(), copyElementStructure(ele, innerHTML));
+        }
+
+        if (html.isEmpty())
+            html = innerHTML;
+
+        return createTag(getTag(pElem), pElem.getAttributes(), html);
+    }
+
+    /**
+     * Gibt den Tag des Elements zurück
+     *
+     * @param elm Element, dess Tag gewünscht wird
+     * @return Tag
+     */
+    @NotNull
+    public static HTML.Tag getTag(Element elm)
+    {
+        String name = elm.getName();
+
+        HTML.Tag t = HTML.getTag(name);
+
+        //if this is an implied para, make the new para a div
+        if(t == null || name.equals("p-implied"))
+            t = HTML.Tag.DIV;
+
+        return t;
     }
     
     /**
      * Incloses a chunk of HTML text in the specified tag
      * with the specified attribs
      * 
-     * @param enclTag
-     * @param set
-     * @param innerHTML
-     * @return
+     * @param enclTag Tagtyp
+     * @param set Attributsset
+     * @param innerHTML einzufügender HTML Code
+     * @return Tag
      */
     public static String createTag(HTML.Tag enclTag, AttributeSet set, String innerHTML)
     {
-        String t = tagOpen(enclTag, set) + innerHTML + tagClose(enclTag);        
-        return t;
+        String html = innerHTML;
+
+        if (set != null)
+        {
+            for (Enumeration e = set.getAttributeNames(); e.hasMoreElements(); )
+            {
+                Object name = e.nextElement();
+
+                if (name instanceof HTML.Tag)
+                {
+                    Object attribute = set.getAttribute(name);
+
+                    HTML.Tag t = (HTML.Tag) name;
+
+                    //if this is an implied para, make the new para a div
+                    if(name.equals("p-implied"))
+                        t = HTML.Tag.DIV;
+
+                    html = createTag(t, _getAttributes(name, attribute), html);
+                }
+            }
+        }
+
+        return _createTagOpen(enclTag, set) + html + _createTagClose(enclTag);
     }
-    
-    private static String tagOpen(HTML.Tag enclTag, AttributeSet set)
+
+    /**
+     * Gibt alle Attribute zurück, welche einem AttributeNamen zugeordnet werden können
+     *
+     * @param pAttributeName AttributeNamen, welchem die Attribute zugeordnet sind
+     * @param pAttribute Alle Attribute
+     * @return Attributsset
+     */
+    private static AttributeSet _getAttributes(Object pAttributeName, Object pAttribute)
+    {
+        AttributeSet newSet;
+
+        if (pAttribute instanceof AttributeSet)
+        {
+            newSet = (AttributeSet) pAttribute;
+        }
+        else
+        {
+            SimpleAttributeSet s = new SimpleAttributeSet();
+            s.addAttribute(pAttributeName, pAttribute);
+            newSet = s;
+        }
+
+        return newSet;
+    }
+
+    /**
+     * Erstellt eines öffnendes Tag mit den gewünschten Attributen
+     *
+     * @param enclTag Tagtyp
+     * @param set Attribute
+     * @return öffnendes Tag
+     */
+    private static String _createTagOpen(HTML.Tag enclTag, AttributeSet set)
     {
         String t = "<" + enclTag;
-        for(Enumeration e = set.getAttributeNames(); e.hasMoreElements();)
+
+        if(set != null)
         {
-            Object name = e.nextElement();
-            if(!name.toString().equals("name"))
-            {               
-                Object val = set.getAttribute(name);
-                t += " " + name + "=\"" + val + "\"";
+            for (Enumeration e = set.getAttributeNames(); e.hasMoreElements(); )
+            {
+                Object name = e.nextElement();
+                if (!name.toString().equals("name") && !(name instanceof HTML.Tag))
+                {
+                    Object val = set.getAttribute(name);
+                    t += " " + name + "=\"" + val + "\"";
+                }
             }
         }
         
         return t + ">";
     }
-    
-    private static String tagClose(HTML.Tag t)
+
+    /**
+     * Erstellt ein schließendes Tag
+     *
+     * @param t Tagtyp
+     * @return schließendes Tag
+     */
+    private static String _createTagClose(HTML.Tag t)
     {
         return "</" + t + ">";
     }

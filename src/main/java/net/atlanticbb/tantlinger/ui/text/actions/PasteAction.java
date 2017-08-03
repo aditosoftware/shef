@@ -4,23 +4,28 @@
  */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
-import java.awt.Toolkit;
+import com.sun.istack.internal.Nullable;
+import net.atlanticbb.tantlinger.ui.UIUtils;
+import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
+import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
+import org.bushe.swing.action.ActionManager;
+import org.bushe.swing.action.ShouldBeEnabledDelegate;
+
+import javax.swing.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.Element;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-
-import javax.swing.*;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-
-import net.atlanticbb.tantlinger.ui.UIUtils;
-import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
-
-import org.bushe.swing.action.ActionManager;
-import org.bushe.swing.action.ShouldBeEnabledDelegate;
+import java.io.IOException;
 
 
 public class PasteAction extends HTMLTextEditAction
@@ -29,8 +34,6 @@ public class PasteAction extends HTMLTextEditAction
      * 
      */
     private static final long serialVersionUID = 1L;
-
-    private JEditorPane wys, src;
 
     public PasteAction()
     {
@@ -51,12 +54,6 @@ public class PasteAction extends HTMLTextEditAction
         });
         
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
-    }
-
-    public void setEditors(JEditorPane pSrc, JEditorPane pWys)
-    {
-        src = pSrc;
-        wys = pWys;
     }
     
     protected void updateWysiwygContextState(JEditorPane wysEditor)
@@ -82,49 +79,141 @@ public class PasteAction extends HTMLTextEditAction
      */
     protected void wysiwygEditPerformed(ActionEvent e, JEditorPane editor)
     {
-        HTMLEditorKit ekit = (HTMLEditorKit)wys.getEditorKit();
-        HTMLDocument document = (HTMLDocument)wys.getDocument();
-        Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
-        
-        try 
+        HTMLEditorKit ekit = (HTMLEditorKit)editor.getEditorKit();
+        HTMLDocument document = (HTMLDocument)editor.getDocument();
+
+        int selectStart = editor.getSelectionStart();
+        int selectEnd = editor.getSelectionEnd();
+
+        String clipText = _getClipboardText();
+
+        if(clipText == null)
+            return;
+
+        String unmodHTML = HTMLUtils.getElementHTML(document.getDefaultRootElement(), true);
+
+        try
         {
+
             CompoundUndoManager.beginCompoundEdit(document);
-            Transferable content = clip.getContents(this);                           
-            String txt = content.getTransferData(
-                new DataFlavor(String.class, "String")).toString();
+            String lineSeparator = "\n";
 
-            if (txt.contains("\n"))
+            Element startElem = document.getParagraphElement(selectStart);
+            Element endElem = document.getParagraphElement(selectEnd);
+
+            HTML.Tag t = HTMLUtils.getTag(startElem);
+
+            /* Bei Div-Tags werden beim Einfügen standardmäßig alle Zeilen in ein einziges Tag eingefügt
+             * Weil dieses Verhalten vom Shef-Editor nicht erwartet wird und zu Problemen führt (z.B. #15367),
+             * muss das Einfügen selber erledigt werden.
+             * Die Vorgehensweise ist etwas komplex und wird deshalb im Rahmen eines AsciiDoc Dokuments erläutert (story15367.adoc)*/
+
+            if (clipText.contains(lineSeparator) && t == HTML.Tag.DIV)
             {
-                // Haesslicher Hack, damit gepastete Zeilenumbrueche in der WYS-Ansicht erhalten bleiben:
-                // 1. \n durch <!--br--> ersetzen
-                txt = txt.trim().replaceAll("\n", "<!--br-->\n");
+                // Informationen werden gesammelt...
 
-                // 2. veraenderten Text im Wys-Editor einfuegen
-                document.replace(wys.getSelectionStart(),
-                        wys.getSelectionEnd() - wys.getSelectionStart(),
-                        txt, ekit.getInputAttributes());
+                String[] lines = clipText.split(lineSeparator);
 
-                // 3. aktuellen wys-Text mit escapetem <!--br--> in Src-Ansicht uebernehmen => richtige <br> werden eingefuegt
-                src.setText(wys.getText());
+                int endLength = endElem.getEndOffset() - selectEnd; // Anzahl von Zeichen zwischen Zeilenanfang und Selektionsanfang
+                int startLength = endElem.getEndOffset() - endElem.getStartOffset() - endLength; // Anzahl von Zeichen zwischen Selektionsende und Zeilenende
 
-                // 4. wys-Ansicht aus Src wiederherstellen => <br>s sind jetzt richtige Zeilenumbrueche
-                wys.setText(src.getText());
+                Element selectStartElement = startElem.getElement(startElem.getElementIndex(selectStart));
+                AttributeSet attr = selectStartElement.getAttributes();
+
+                String endHTML = HTMLUtils.createTag(t, HTMLUtils.getElementHTML(endElem, true));
+                String lastLine = lines[lines.length - 1];
+
+                // Schritt 1: Erste Zeile in vorhandenes Tag einfügen
+
+                int replLength = startElem.getEndOffset() - selectStart - 1;
+                document.replace(selectStart, replLength, lines[0], attr); // <- Hier geschieht das Einfügen
+
+                // Schritt 2: Ursprünglich vorhandenen Tag (endHTML) unter den eben manipulierten Tag einfügen
+
+                Element parentEndElement = endElem.getParentElement();
+                editor.setCaretPosition(parentEndElement.getEndOffset() - 1);
+                HTMLUtils.insertHTML(endHTML, t, editor);
+                Element newEndElem = document.getParagraphElement(parentEndElement.getEndOffset() + 1);// +1 damit das Element nach dem parentEndElement zurückgegeben wird
+
+                int caret = startElem.getEndOffset();
+
+                // Schritt 3: Letzte Zeile in eingefügten Tag einfügen
+
+                document.replace(caret, (newEndElem.getStartOffset() - caret) + startLength, lastLine, attr); // <- Hier geschieht das zweite Einfügen
+
+                // Schritt 4: Fehlende Zeilen zwischen der Ersten und der Letzten einfügen
+                // Caret wird positioniert, um bei HTMLUtils.insertHTML an der richtigen Stelle einzufügen
+
+                editor.setCaretPosition(caret);
+
+                for (int i = 1; i < lines.length - 1; i++) //Erste und Letzte werden ignoriert
+                {
+                    String tag = HTMLUtils.createTag(t, attr, "");
+                    HTMLUtils.insertHTML(tag, t, editor);
+                    Element element = document.getParagraphElement(caret);
+                    document.replace(element.getStartOffset(), 0, lines[i], attr);
+                }
+
+                // Schritt 5: Caret an die vom Benutzer erwartete Stelle setzten (Hinter dem eingefügten Text)
+
+                int newCaret = editor.getCaretPosition() + lastLine.length();
+
+                if (newCaret >= 0 && newCaret < document.getLength())
+                    editor.setCaretPosition(newCaret);
+
+                return;
             }
-            else
-            {
-                document.replace(wys.getSelectionStart(),
-                        wys.getSelectionEnd() - wys.getSelectionStart(),
-                        txt, ekit.getInputAttributes());
-            }
-
         }
         catch(Exception ex)
         {
-            //ex.printStackTrace();
+            try
+            {
+                document.remove(0, document.getLength());
+                editor.setCaretPosition(0);
+                document.setInnerHTML(document.getDefaultRootElement(), unmodHTML);
+            }
+            catch (Exception e1)
+            {
+                //Wenn das auch nicht mehr geht ist "Hopfen und Malz verloren!"
+            }
         }
         finally
         {
             CompoundUndoManager.endCompoundEdit(document);
         }
-    }    
+
+        // Standardverfahren
+        try
+        {
+            document.replace(selectStart, selectEnd - selectStart, clipText, ekit.getInputAttributes());
+        }
+        catch (Exception pE)
+        {
+            // Wenn die Position nicht legal ist, kann nicht eingefügt werden. -> Nix tun
+        }
+    }
+
+    /**
+     * Holt den Text aus der Zwischenablage
+     *
+     * @return Clipboard Text
+     */
+    @Nullable
+    private String _getClipboardText()
+    {
+        String txt = null;
+
+        try
+        {
+            Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+            Transferable content = clip.getContents(this);
+            txt = content.getTransferData(new DataFlavor(String.class, "String")).toString();
+        }
+        catch (IOException | UnsupportedFlavorException pE)
+        {
+            // Null wird zurückgeben
+        }
+
+        return txt;
+    }
 }

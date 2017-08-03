@@ -142,7 +142,7 @@ public class HTMLEditorPane extends JPanel
 
         ActionList paraActions = new ActionList("paraActions");
         ActionList fontSizeActions = new ActionList("fontSizeActions");
-        ActionList editActions = HTMLEditorActionFactory.createEditActionList(wysEditor, srcEditor);
+        ActionList editActions = HTMLEditorActionFactory.createEditActionList();
         Action objectPropertiesAction = new HTMLElementPropertiesAction();
         
         //create editor popupmenus
