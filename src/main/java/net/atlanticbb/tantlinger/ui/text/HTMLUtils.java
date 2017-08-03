@@ -30,13 +30,13 @@ import java.util.List;
 /**
  * A collection of static convenience methods for working with HTML,
  * HTMLDocuments, AttributeSets and Elements from HTML documents.
- * 
+ *
  * @author Bob Tantlinger
  *
  */
 public class HTMLUtils
 {
-    
+
     private static final Tidy tidy = new Tidy();
     static
     {
@@ -52,11 +52,11 @@ public class HTMLUtils
         //tidy.setInputEncoding("UTF-16");
         //tidy.setOutputEncoding("UTF-16");
     }
-    
-            
+
+
     /**
      * Tests if an element is an implied paragraph (p-implied)
-     * 
+     *
      * @param el The element
      * @return true if the elements name equals "p-implied", false otherwise
      */
@@ -64,7 +64,7 @@ public class HTMLUtils
     {
         return el.getName().equals("p-implied");
     }
-    
+
     /**
      * Incloses a chunk of HTML text in the specified tag
      * @param enclTag the tag to enclose the HTML in
@@ -106,7 +106,6 @@ public class HTMLUtils
      * @param elm Element, dess Tag gewünscht wird
      * @return Tag
      */
-    @NotNull
     public static HTML.Tag getTag(Element elm)
     {
         String name = elm.getName();
@@ -119,11 +118,11 @@ public class HTMLUtils
 
         return t;
     }
-    
+
     /**
      * Incloses a chunk of HTML text in the specified tag
      * with the specified attribs
-     * 
+     *
      * @param enclTag Tagtyp
      * @param set Attributsset
      * @param innerHTML einzufügender HTML Code
@@ -205,7 +204,7 @@ public class HTMLUtils
                 }
             }
         }
-        
+
         return t + ">";
     }
 
@@ -219,18 +218,18 @@ public class HTMLUtils
     {
         return "</" + t + ">";
     }
-    
+
     public static List getParagraphElements(JEditorPane editor)
     {
         List elems = new LinkedList();
         try
         {
-            HTMLDocument doc = (HTMLDocument)editor.getDocument();        
+            HTMLDocument doc = (HTMLDocument)editor.getDocument();
             Element curE = getParaElement(doc, editor.getSelectionStart());
             Element endE = getParaElement(doc, editor.getSelectionEnd());
-            
+
             while(curE.getEndOffset() <= endE.getEndOffset())
-            {               
+            {
                 elems.add(curE);
                 curE = getParaElement(doc, curE.getEndOffset() + 1);
                 if(curE.getEndOffset() >= doc.getLength())
@@ -238,10 +237,10 @@ public class HTMLUtils
             }
         }
         catch(ClassCastException cce){}
-        
+
         return elems;
     }
-    
+
     private static Element getParaElement(HTMLDocument doc, int pos)
     {
         Element curE = doc.getParagraphElement(pos);
@@ -249,14 +248,14 @@ public class HTMLUtils
         {
             curE = curE.getParentElement();
         }
-        
+
         Element lp = getListParent(curE);
         if(lp != null)
             curE = lp;
-        
+
         return curE;
     }
-    
+
     /**
      * Searches upward for the specified parent for the element.
      * @param curElem
@@ -267,15 +266,15 @@ public class HTMLUtils
     {
         Element parent = curElem;
         while(parent != null)
-        {            
+        {
             if(parent.getName().equals(parentTag.toString()))
                 return parent;
             parent = parent.getParentElement();
         }
-        
+
         return null;
     }
-    
+
     /**
      * Tests if the element is empty
      * @param el
@@ -283,13 +282,13 @@ public class HTMLUtils
      */
     public static boolean isElementEmpty(Element el)
     {
-        String s = getElementHTML(el, false).trim();        
+        String s = getElementHTML(el, false).trim();
         return s.length() == 0;
     }
-    
+
     /**
      * Searches for a list {@link Element} that is the parent of the specified {@link Element}.
-     * 
+     *
      * @param elem
      * @return A list element (UL, OL, DIR, MENU, or DL) if found, null otherwise
      */
@@ -298,7 +297,7 @@ public class HTMLUtils
         Element parent = elem;
         while(parent != null)
         {
-            if(parent.getName().toUpperCase().equals("UL") || 
+            if(parent.getName().toUpperCase().equals("UL") ||
                 parent.getName().toUpperCase().equals("OL") ||
                 parent.getName().equals("dl") || parent.getName().equals("menu") ||
                 parent.getName().equals("dir"))
@@ -307,7 +306,7 @@ public class HTMLUtils
         }
         return null;
     }
-    
+
     /**
      * Gets the element one position less than the start of the specified element
      * @param doc
@@ -320,7 +319,7 @@ public class HTMLUtils
             return doc.getParagraphElement(el.getStartOffset() - 1);
         return el;
     }
-    
+
     /**
      * Gets the element one position greater than the end of the specified element
      * @param doc
@@ -333,7 +332,7 @@ public class HTMLUtils
             return doc.getParagraphElement(el.getEndOffset() + 1);
         return el;
     }
-    
+
     /**
      * Removes the enclosing tags from a chunk of HTML text
      * @param elem
@@ -353,32 +352,32 @@ public class HTMLUtils
      * @return
      */
     public static String removeEnclosingTags(HTML.Tag t, String txt)
-    {       
+    {
         String openStart = "<" + t;
         String closeTag = "</" + t + ">";
-        
+
         txt = txt.trim();
-        
+
         if(txt.startsWith(openStart))
         {
             int n = txt.indexOf(">");
             if(n != -1)
             {
-                txt = txt.substring(n + 1, txt.length());                
+                txt = txt.substring(n + 1, txt.length());
             }
         }
-        
+
         if(txt.endsWith(closeTag))
         {
-            txt = txt.substring(0, txt.length() - closeTag.length());            
+            txt = txt.substring(0, txt.length() - closeTag.length());
         }
-        
-        return txt;       
+
+        return txt;
     }
 
     /**
      * Gets the html of the specified {@link Element}
-     * 
+     *
      * @param el
      * @param includeEnclosingTags true, if the enclosing tags should be included
      * @return
@@ -406,7 +405,7 @@ public class HTMLUtils
 
     /**
      * Removes an element from the document that contains it
-     * 
+     *
      * @param el
      * @throws BadLocationException
      */
@@ -415,24 +414,24 @@ public class HTMLUtils
         HTMLDocument document = (HTMLDocument)el.getDocument();
         int start = el.getStartOffset();
         int len = el.getEndOffset() - start;
-        
-        Element tdEle = HTMLUtils.getParent(el, HTML.Tag.TD);        
+
+        Element tdEle = HTMLUtils.getParent(el, HTML.Tag.TD);
         if(tdEle != null && el.getEndOffset() == tdEle.getEndOffset())
         {
-            document.remove(start, len - 1);            
+            document.remove(start, len - 1);
         }
         else
-        {        
-            if(el.getEndOffset() > document.getLength())            
-                len = document.getLength() - start;            
-            
-            document.remove(start, len);            
-        }           
+        {
+            if(el.getEndOffset() > document.getLength())
+                len = document.getLength() - start;
+
+            document.remove(start, len);
+        }
     }
-       
-    
+
+
     public static HTML.Tag getStartTag(String text)
-    {       
+    {
         String html = text.trim();
         int s = html.indexOf('<');
         if(s != 0)//doesn't start with a tag.
@@ -440,36 +439,36 @@ public class HTMLUtils
         int e = html.indexOf('>');
         if(e == -1)
             return null; //not any kind of tag
-        
+
         String tagName = html.substring(1, e).trim();
         if(tagName.indexOf(' ') != -1)
             tagName = tagName.split("\\s")[0];
-        
+
         return HTML.getTag(tagName);
     }
-    
+
     private static int depthFromRoot(Element curElem)
     {
         Element parent = curElem;
         int depth = 0;
         while(parent != null)
-        {            
+        {
             if(parent.getName().equals("body") || /*parent.getName().equals("blockquote") ||*/ parent.getName().equals("td"))
                 break;
             parent = parent.getParentElement();
             depth++;
         }
-        
+
         return depth;
     }
-    
-    
-   
-    
+
+
+
+
     /**
      * Inserts an arbitrary chunk of HTML into the JEditorPane at the current
      * caret position.
-     * 
+     *
      * @param rawHtml
      * @param editor
      */
@@ -477,22 +476,22 @@ public class HTMLUtils
     {
         tidy.setOutputEncoding("UTF-8");
         tidy.setInputEncoding("UTF-8");
-        
+
         try
         {
-            ByteArrayInputStream bin = new ByteArrayInputStream(rawHtml.getBytes("UTF-8"));       
+            ByteArrayInputStream bin = new ByteArrayInputStream(rawHtml.getBytes("UTF-8"));
             Document doc = tidy.parseDOM(bin, null);
             NodeList nodelist = doc.getElementsByTagName("body");
-            
+
             if(nodelist != null)
             {
                 Node body = nodelist.item(0);
                 NodeList bodyChildren = body.getChildNodes();
-                
+
                 //for(int i = bodyChildren.getLength() - 1; i >= 0; i--)
                 int len = bodyChildren.getLength();
                 for(int i = 0; i < len; i++)
-                {                
+                {
                     String ml = xmlToString(bodyChildren.item(i));
                     if(ml != null)
                     {
@@ -503,17 +502,17 @@ public class HTMLUtils
                             tag = HTML.Tag.SPAN;
                             ml = "<span>" + ml + "</span>";
                         }
-                        insertHTML(ml, tag, editor);    
+                        insertHTML(ml, tag, editor);
                     }
-                }                               
+                }
             }
         }
         catch (UnsupportedEncodingException e)
-        {            
+        {
             e.printStackTrace();
-        }        
+        }
     }
-            
+
     private static String xmlToString(Node node)
     {
         try
@@ -524,9 +523,9 @@ public class HTMLUtils
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer = factory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");            
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.transform(source, result);
-            
+
             return stringWriter.getBuffer().toString();
         }
         catch(TransformerConfigurationException e)
@@ -537,15 +536,15 @@ public class HTMLUtils
         {
             e.printStackTrace();
         }
-        
+
         return null;
     }
-    
+
 
     /**
      * Inserts a string of html into the {@link JEditorPane}'s {@link HTMLDocument}
      * at the current caret position.
-     * 
+     *
      * @param html
      * @param tag
      * @param editor
@@ -564,7 +563,7 @@ public class HTMLUtils
             return;
         }
 
-        int caret = editor.getCaretPosition();        
+        int caret = editor.getCaretPosition();
         Element pElem = document.getParagraphElement(caret);
 
         boolean breakParagraph = tag.breaksFlow() || tag.isBlock();
@@ -572,7 +571,7 @@ public class HTMLUtils
         html = jEditorPaneizeHTML(html);
 
         //System.out.println(html);
-        
+
         try
         {
             if(breakParagraph && beginParagraph)
@@ -581,7 +580,7 @@ public class HTMLUtils
                 document.insertBeforeStart(pElem, "<p></p>");
                 Element nextEl = document.getParagraphElement(caret + 1);
                 editorKit.insertHTML(document, caret + 1, html, depthFromRoot(nextEl)/*1*/, 0, tag);
-                document.remove(caret, 1);                
+                document.remove(caret, 1);
             }
             else if(breakParagraph && !beginParagraph)
             {
@@ -594,7 +593,7 @@ public class HTMLUtils
                 
                  /* Trick: insert a non-breaking space after start, so that we're inserting into the middle of a line.
                  * Then, remove the space. This works around a bug when using insertHTML near the beginning of a
-                 * paragraph.*/                 
+                 * paragraph.*/
                 document.insertAfterStart(pElem, "&nbsp;");
                 editorKit.insertHTML(document, caret + 1, html, 0, 0, tag);
                 document.remove(caret, 1);
@@ -608,16 +607,16 @@ public class HTMLUtils
         catch(Exception ex)
         {
             ex.printStackTrace();
-        }        
+        }
     }
-    
+
     /**
      * Gets the character attributes at the {@link JEditorPane}'s caret position
      * <p>
      * If there is no selection, the character attributes at caretPos - 1 are retuned.
      * If there is a slection, the attributes at selectionEnd - 1 are returned
      * </p>
-     * 
+     *
      * @param editor
      * @return An {@link AttributeSet} or null, if the editor doesn't have a {@link StyledDocument}
      */
@@ -632,28 +631,28 @@ public class HTMLUtils
         {
             p = (editor.getCaretPosition() > 0) ? (editor.getCaretPosition() - 1) : 0;
         }
-        
+
         try
         {
             StyledDocument doc = (StyledDocument)editor.getDocument();
             return (doc.getCharacterElement(p).getAttributes());
         }
         catch(ClassCastException cce){}
-        
+
         return null;
     }
-    
+
     /**
      * Gets the font family name at the {@link JEditorPane}'s current caret position
-     * 
+     *
      * @param editor
      * @return The font family name, or null if no font is set
      */
     public static String getFontFamily(JEditorPane editor)
-    {        
+    {
         AttributeSet attr = getCharacterAttributes(editor);
         if(attr != null)
-        {        
+        {
             Object val = attr.getAttribute(StyleConstants.FontFamily);
             if(val != null)
                 return val.toString();
@@ -669,22 +668,22 @@ public class HTMLUtils
                     return val.toString();
             }
         }
-        
+
         return null; //no font family was defined        
     }
-    
+
     /**
      * Set's the font family at the {@link JEditorPane}'s current caret positon, or
      * for the current selection (if there is one).
      * <p>
      * If the fontName parameter is null, any currently set font family is removed.
      * </p>
-     * 
+     *
      * @param editor
      * @param fontName
      */
     public static void setFontFamily(JEditorPane editor, String fontName)
-    {        
+    {
         AttributeSet attr = getCharacterAttributes(editor);
         if(attr == null)
             return;
@@ -697,7 +696,7 @@ public class HTMLUtils
         {
             return;
         }*/
-        
+
         printAttribs(attr);
         if(fontName == null) //we're removing the font
         {
@@ -718,7 +717,7 @@ public class HTMLUtils
                         fontSet.addAttribute(HTML.Tag.FONT, set);
                         setCharacterAttributes(editor, set);
                     }
-                }                    
+                }
             }
             //also remove these for good measure
             removeCharacterAttribute(editor, StyleConstants.FontFamily);
@@ -732,16 +731,16 @@ public class HTMLUtils
         }
         printAttribs(attr);
     }
-    
+
     /**
      * Removes a CSS character attribute that has the specified value
      * from the {@link JEditorPane}'s current caret position
-     * or selection. 
+     * or selection.
      * <p>
      * The val parameter is a {@link String} even though the actual attribute value is not.
      * This is because the actual attribute values are not public. Thus, this method checks
      * the value via the toString() method</p>
-     * 
+     *
      * @param editor
      * @param atr
      * @param val
@@ -752,20 +751,20 @@ public class HTMLUtils
         MutableAttributeSet attr;
         try
         {
-            doc = (HTMLDocument)editor.getDocument();           
+            doc = (HTMLDocument)editor.getDocument();
             attr = ((HTMLEditorKit)editor.getEditorKit()).getInputAttributes();
         }
         catch(ClassCastException cce)
         {
             return;
         }
-        
+
         List tokens = tokenizeCharAttribs(doc, editor.getSelectionStart(), editor.getSelectionEnd());
         for(Iterator it = tokens.iterator(); it.hasNext();)
         {
-            CharStyleToken t = (CharStyleToken)it.next();            
+            CharStyleToken t = (CharStyleToken)it.next();
             if(t.attrs.isDefined(atr) && t.attrs.getAttribute(atr).toString().equals(val))
-            {                                        
+            {
                 SimpleAttributeSet sas = new SimpleAttributeSet();
                 sas.addAttributes(t.attrs);
                 sas.removeAttribute(atr);
@@ -776,36 +775,36 @@ public class HTMLUtils
         attr.addAttributes(doc.getCharacterElement(pos).getAttributes());
         attr.removeAttribute(atr);
     }
-    
+
     /**
      * Removes a single character attribute from the editor's current position/selection.
-     * 
+     *
      * <p>Removes from the editor kit's input attribtues and/or document at the caret position.
      * If there is a selction the attribute is removed from the selected text</p>
-     * 
+     *
      * @param editor
      * @param atr
-     */    
+     */
     public static void removeCharacterAttribute(JEditorPane editor, Object atr)
     {
         HTMLDocument doc;
         MutableAttributeSet attr;
         try
         {
-            doc = (HTMLDocument)editor.getDocument();           
+            doc = (HTMLDocument)editor.getDocument();
             attr = ((HTMLEditorKit)editor.getEditorKit()).getInputAttributes();
         }
         catch(ClassCastException cce)
         {
             return;
         }
-        
+
         List tokens = tokenizeCharAttribs(doc, editor.getSelectionStart(), editor.getSelectionEnd());
         for(Iterator it = tokens.iterator(); it.hasNext();)
         {
-            CharStyleToken t = (CharStyleToken)it.next();            
+            CharStyleToken t = (CharStyleToken)it.next();
             if(t.attrs.isDefined(atr))
-            {                                        
+            {
                 SimpleAttributeSet sas = new SimpleAttributeSet();
                 sas.addAttributes(t.attrs);
                 sas.removeAttribute(atr);
@@ -815,8 +814,8 @@ public class HTMLUtils
         int pos = editor.getCaretPosition();
         attr.addAttributes(doc.getCharacterElement(pos).getAttributes());
         attr.removeAttribute(atr);
-    }    
-    
+    }
+
     /**
      * Tokenizes character attrbutes.
      * @param doc
@@ -825,38 +824,38 @@ public class HTMLUtils
      * @return
      */
     private static List tokenizeCharAttribs(HTMLDocument doc, int s, int e)
-    {        
+    {
         LinkedList tokens = new LinkedList();
-        CharStyleToken tok = new CharStyleToken();            
-        for(; s <= e; s++ )            
+        CharStyleToken tok = new CharStyleToken();
+        for(; s <= e; s++ )
         {
             //if(s == doc.getLength())
             //    break;
             AttributeSet as = doc.getCharacterElement(s).getAttributes();
             if(tok.attrs == null || (s + 1 <= e && !as.isEqual(tok.attrs)))
-            {              
+            {
                 tok = new CharStyleToken();
                 tok.offs = s;
-                tokens.add(tok);                    
+                tokens.add(tok);
                 tok.attrs = as;
-            } 
-            
+            }
+
             if(s+1 <= e)
                tok.len++;
         }
-        
+
         return tokens;
     }
-    
+
     /**
      * Sets the character attributes for selection of the specified editor
-     * 
+     *
      * @param editor
      * @param replace if true, replaces the attrubutes
      */
     public static void setCharacterAttributes(JEditorPane editor, AttributeSet attr, boolean replace)
     {
-        HTMLDocument doc;  
+        HTMLDocument doc;
         StyledEditorKit k;
         try
         {
@@ -866,24 +865,24 @@ public class HTMLUtils
         catch(ClassCastException ex)
         {
             return;
-        }       
-         
+        }
+
         //TODO figure out what the "CR" attribute is.
         //Somewhere along the line the attribute  CR (String key) with a value of Boolean.TRUE
         //gets inserted. If it is in the attributes, something gets screwed up
         //and the text gets all jumbled up and doesn't render correctly.
         //Is it yet another JEditorPane bug?
-        MutableAttributeSet inputAttributes = k.getInputAttributes();        
+        MutableAttributeSet inputAttributes = k.getInputAttributes();
         SimpleAttributeSet sas = new SimpleAttributeSet(attr);
         sas.removeAttribute("CR");
         attr = sas;
-                
+
         int p0 = editor.getSelectionStart();
         int p1 = editor.getSelectionEnd();
         if(p0 != p1)
         {
             doc.setCharacterAttributes(p0, p1 - p0, attr, replace);
-        }        
+        }
         else
         {
             //No selection, so we have to update the input attributes
@@ -893,17 +892,17 @@ public class HTMLUtils
             if(replace)
             {
                 attr = attr.copyAttributes();
-                inputAttributes.removeAttributes(inputAttributes);                
+                inputAttributes.removeAttributes(inputAttributes);
                 inputAttributes.addAttribute(StyleConstants.NameAttribute, HTML.Tag.CONTENT);
             }
             inputAttributes.addAttributes(attr);
             //System.err.println("inputAttr: " + inputAttributes);
         }
     }
-    
+
     /**
      * Sets the character attributes for selection of the specified editor
-     * 
+     *
      * @param editor
      * @param attrs
      */
@@ -911,10 +910,10 @@ public class HTMLUtils
     {
         setCharacterAttributes(editor, attrs, false);
     }
-    
+
     /**
-     * Converts an html tag attribute list to a {@link Map}. 
-     * For example, the String 'href="http://blah.com" target="_self"' becomes 
+     * Converts an html tag attribute list to a {@link Map}.
+     * For example, the String 'href="http://blah.com" target="_self"' becomes
      * name-value pairs:<br>
      * href > http://blah.com<br>
      * target > _self
@@ -923,9 +922,9 @@ public class HTMLUtils
      */
     public static Map tagAttribsToMap(String atts)
     {
-        Map attribs = new HashMap();        
-        
-        StringTokenizer st = new StringTokenizer(atts.trim(), " ");        
+        Map attribs = new HashMap();
+
+        StringTokenizer st = new StringTokenizer(atts.trim(), " ");
         String lastAtt = null;
         while(st.hasMoreTokens())
         {
@@ -935,32 +934,32 @@ public class HTMLUtils
             {
                 if(lastAtt == null)
                     break;//no equals char in this string
-                String lastVal = attribs.get(lastAtt).toString();                
+                String lastVal = attribs.get(lastAtt).toString();
                 attribs.put(lastAtt, lastVal + " " + atVal);
                 continue;
             }
-            
+
             String at = atVal.substring(0, equalPos);
             String val = atVal.substring(atVal.indexOf('=') + 1, atVal.length());
             if(val.startsWith("\""))
                 val = val.substring(1, val.length());
             if(val.endsWith("\""))
                 val = val.substring(0, val.length() - 1);
-            
+
             attribs.put(at, val);
-            lastAtt = at;            
+            lastAtt = at;
         }
-        
+
         return attribs;
     }
-    
-    
+
+
 
     /**
      * Converts a Color to a hex string
      * in the format "#RRGGBB"
      */
-    public static String colorToHex(Color color) 
+    public static String colorToHex(Color color)
     {
         String colorstr = new String("#");
 
@@ -993,8 +992,8 @@ public class HTMLUtils
 
         return colorstr;
     }
-    
-    
+
+
     /**
      * Convert a "#FFFFFF" hex string to a Color.
      * If the color specification is bad, an attempt
@@ -1004,35 +1003,35 @@ public class HTMLUtils
     {
         String digits;
         //int n = value.length();
-        if(value.startsWith("#"))        
-            digits = value.substring(1, Math.min(value.length(), 7));        
-        else         
+        if(value.startsWith("#"))
+            digits = value.substring(1, Math.min(value.length(), 7));
+        else
             digits = value;
-        
+
         String hstr = "0x" + digits;
         Color c;
-        
-        try 
+
+        try
         {
             c = Color.decode(hstr);
-        } 
-        catch(NumberFormatException nfe) 
+        }
+        catch(NumberFormatException nfe)
         {
             c = Color.BLACK; // just return black
         }
-        return c; 
+        return c;
     }
-    
+
     /**
      * Convert a color string such as "RED" or "#NNNNNN" or "rgb(r, g, b)"
      * to a Color.
      */
-    public static Color stringToColor(String str) 
+    public static Color stringToColor(String str)
     {
         Color color = null;
-        
+
         if (str.length() == 0)
-            color = Color.black;      
+            color = Color.black;
         else if (str.charAt(0) == '#')
             color = hexToColor(str);
         else if (str.equalsIgnoreCase("Black"))
@@ -1071,21 +1070,21 @@ public class HTMLUtils
             color = hexToColor(str); // sometimes get specified without leading #
         return color;
     }
-    
+
     /**
      * Removes self-closing tags from xhtml for the benifit of {@link JEditorPane}
-     * 
+     *
      * <p>JEditorpane can't handle empty xhtml containers like &lt;br /&gt; or &lt;img /&gt;, so this method
      * replaces them without the "/" as in &lt;br&gt;</p>
-     * 
-     * @param html 
+     *
+     * @param html
      * @return JEditorpane friendly html
      */
     public static String jEditorPaneizeHTML(String html)
-    {        
+    {
         return html.replaceAll("(<\\s*\\w+\\b[^>]*)/(\\s*>)", "$1$2");
     }
-    
+
     /**
      * Helper method that prints out the contents of an {@link AttributeSet} to System.err
      * for debugging
@@ -1104,7 +1103,7 @@ public class HTMLUtils
         }
         System.err.println("----------------------------------------------------------------");
     }
-    
+
     private static class CharStyleToken
     {
         int offs;

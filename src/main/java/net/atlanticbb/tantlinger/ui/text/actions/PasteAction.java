@@ -4,7 +4,6 @@
  */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
-import com.sun.istack.internal.Nullable;
 import net.atlanticbb.tantlinger.ui.UIUtils;
 import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
@@ -198,7 +197,6 @@ public class PasteAction extends HTMLTextEditAction
      *
      * @return Clipboard Text
      */
-    @Nullable
     private String _getClipboardText()
     {
         String txt = null;
