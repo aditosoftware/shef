@@ -151,6 +151,7 @@ public class PasteAction extends HTMLTextEditAction
                     HTMLUtils.insertHTML(tag, t, editor);
                     Element element = document.getParagraphElement(caret);
                     document.replace(element.getStartOffset(), 0, lines[i], attr);
+                    caret = element.getEndOffset();
                 }
 
                 // Schritt 5: Caret an die vom Benutzer erwartete Stelle setzten (Hinter dem eingefügten Text)
