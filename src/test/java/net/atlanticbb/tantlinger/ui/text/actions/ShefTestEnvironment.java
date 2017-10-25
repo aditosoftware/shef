@@ -32,7 +32,7 @@ class ShefTestEnvironment
     ShefTestEnvironment()
     {
         pane = new JEditorPane();
-        WysiwygHTMLEditorKit editorKit = new WysiwygHTMLEditorKit(null, null);
+        WysiwygHTMLEditorKit editorKit = new WysiwygHTMLEditorKit();
         pane.setEditorKitForContentType("text/html", editorKit);
         pane.setContentType("text/html");
     }

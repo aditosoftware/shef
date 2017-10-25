@@ -39,18 +39,13 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
     private Map editorToActionsMap = new HashMap();
     private KeyStroke tabBackwardKS = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK);
 
-    JEditorPane wys, src;
-    public WysiwygHTMLEditorKit(JEditorPane pWys, JEditorPane pSrc)
-    {
-        super();
-        wys = pWys;
-        src = pSrc;
-    }
     
     public Document createDefaultDocument()
     {
         HTMLDocument doc = (HTMLDocument)super.createDefaultDocument();
-              
+
+        doc.setDocumentFilter(new WysiwygHTMLEditorDocumentFilter());
+
         //Unless the following property is set, the HTML parser will throw a 
         //ChangedCharSetException every time a char set tag is encountered.        
         doc.putProperty("IgnoreCharsetDirective", Boolean.TRUE);

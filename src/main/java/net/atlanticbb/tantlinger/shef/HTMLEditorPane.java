@@ -506,7 +506,7 @@ public class HTMLEditorPane extends JPanel
     private JEditorPane createWysiwygEditor()
     {
         JEditorPane ed = new JEditorPane();
-        ed.setEditorKitForContentType("text/html", new WysiwygHTMLEditorKit(wysEditor, srcEditor));
+        ed.setEditorKitForContentType("text/html", new WysiwygHTMLEditorKit());
        
         ed.setContentType("text/html"); 
         
