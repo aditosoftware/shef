@@ -5,7 +5,7 @@ import javax.swing.text.*;
 /**
  * @author j.boesl, 25.10.17
  */
-class WysiwygHTMLEditorDocumentFilter extends DocumentFilter
+public class WysiwygHTMLEditorDocumentFilter extends DocumentFilter
 {
   @Override
   public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException
