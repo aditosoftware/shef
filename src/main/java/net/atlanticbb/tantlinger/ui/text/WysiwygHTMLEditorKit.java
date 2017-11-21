@@ -44,9 +44,6 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
     {
         HTMLDocument doc = (HTMLDocument)super.createDefaultDocument();
 
-        if (Boolean.getBoolean("adito.memo.preservewhitespaces"))
-          doc.setDocumentFilter(new WysiwygHTMLEditorDocumentFilter());
-
         //Unless the following property is set, the HTML parser will throw a
         //ChangedCharSetException every time a char set tag is encountered.
         doc.putProperty("IgnoreCharsetDirective", Boolean.TRUE);
